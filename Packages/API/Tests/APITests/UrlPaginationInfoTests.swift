@@ -53,13 +53,13 @@ final class UrlPaginationInfoTests: XCTestCase {
         XCTAssertEqual(sut, sample)
     }
     
+    // TODO: Add similar tests for `prev`, `last`, `next`.
     func testRepeatedNext_inFullHeader_throwsCorrectError() throws {
         let fullHeader = Samples.linkHeader()
         let extraHeader = Samples.linkHeader(prev: false, first: false, last: false)
         let header = [fullHeader, extraHeader].joined(separator: ", ")
         let sample = Samples.paginationInfo
         
-        var sut = try UrlPaginationInfo(githubLinkHeader: header)
         XCTAssertThrowsError(try UrlPaginationInfo(githubLinkHeader: header)) { error in
             if case let ApiError.duplicatePaginationLink(linkKey) = error {
                 XCTAssertEqual(linkKey, "next")
@@ -67,7 +67,6 @@ final class UrlPaginationInfoTests: XCTestCase {
                 XCTFail("Wrong error thrown \(error)")
             }
         }
-        XCTAssertEqual(sut, sample)
     }
     
 }

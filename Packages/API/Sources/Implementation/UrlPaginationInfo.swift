@@ -18,11 +18,13 @@ public struct UrlPaginationInfo: PaginationInfoProtocol, Equatable {
 
     init(githubLinkHeader: String) throws {
         let records = githubLinkHeader.components(separatedBy: ",")
-
-        try safeSet(keyPath: \.first, recordKey: "first", from: records)
-        try safeSet(keyPath: \.last, recordKey: "last", from: records)
-        try safeSet(keyPath: \.next, recordKey: "next", from: records)
-        try safeSet(keyPath: \.prev, recordKey: "prev", from: records)
+        
+        for record in records {
+            if try safeSet(keyPath: \.first, linkKey: "first", from: record) { continue }
+            if try safeSet(keyPath: \.last, linkKey: "last", from: record) { continue }
+            if try safeSet(keyPath: \.next, linkKey: "next", from: record) { continue }
+            if try safeSet(keyPath: \.prev, linkKey: "prev", from: record) { continue }
+        }
     }
     
     init(next: URL? = nil, prev: URL? = nil, first: URL? = nil, last: URL? = nil) {
@@ -36,20 +38,19 @@ public struct UrlPaginationInfo: PaginationInfoProtocol, Equatable {
 
 private extension UrlPaginationInfo {
     
-    // TODO: remove respective record from `records`
     mutating func safeSet(
         keyPath: WritableKeyPath<UrlPaginationInfo, URL?>,
-        recordKey: String,
-        from records: [String]
-    ) throws -> () {
-        for record in records {
-            if record.contains(recordKey) {
-                guard self[keyPath: keyPath] == nil else {
-                    throw ApiError.duplicatePaginationLink(recordKey)
-                }
-                self[keyPath: keyPath] = link(from: record)
-                break
+        linkKey: String,
+        from record: String
+    ) throws -> Bool {
+        if record.contains(linkKey) {
+            guard self[keyPath: keyPath] == nil else {
+                throw ApiError.duplicatePaginationLink(linkKey)
             }
+            self[keyPath: keyPath] = link(from: record)
+            return true
+        } else {
+            return false
         }
     }
     
