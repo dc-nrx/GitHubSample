@@ -25,6 +25,10 @@ let package = Package(
             dependencies: ["API"]),
         .testTarget(
             name: "APITests",
-            dependencies: ["API"]),
+            dependencies: ["API", "Implementation"],
+            swiftSettings: [
+                // Suppress the deprecation warning in `UrlSessionMock.init`.
+                .unsafeFlags(["-suppress-warnings"]),
+            ]),
     ]
 )

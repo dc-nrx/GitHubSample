@@ -24,7 +24,7 @@ public class GitHubAPIImplementation {
     public init(
         baseURL: URL = URL(string: "https://api.github.com")!,
         session: URLSession = .shared
-    ) throws {
+    ) {
         self.session = session
         self.baseURL = baseURL
     }
@@ -34,7 +34,10 @@ extension GitHubAPIImplementation: GitHubAPI {
     public typealias PaginationInfo = UrlPaginationInfo
 
     public func fetchUsers(since: User.ID, perPage: Int) async throws -> ([User], UrlPaginationInfo) {
-        let url = baseURL.appending(path: "/users")
+        let url = try URL(base: baseURL, path: "users", query: [
+            "since": since,
+            "per_page": perPage
+        ])        
         return try await fetchUsers(url: url)
     }
     
