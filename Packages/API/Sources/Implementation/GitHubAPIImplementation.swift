@@ -9,12 +9,6 @@ import Foundation
 import API
 import OSLog
 
-public enum ApiError: Error {
-    case failedToRetrievePaginationInfoHeader(HTTPURLResponse)
-    case invalidServerResponse(URLResponse)
-    case httpError(Int)
-}
-
 public class GitHubAPIImplementation {
     
     static let authKey = "Authorization"

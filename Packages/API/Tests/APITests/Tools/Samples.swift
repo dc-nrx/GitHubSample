@@ -22,14 +22,14 @@ final class Samples {
         prev: Bool = true,
         first: Bool = true,
         last: Bool = true,
-        inverseOrder: Bool = false
+        reverseOrder: Bool = false
     ) -> String {
         var links = [String]()
         if next {
-            links.append("<\(paginationInfo.prev!.absoluteString)>; rel=\"prev\"")
+            links.append("<\(paginationInfo.next!.absoluteString)>; rel=\"next\"")
         }
         if prev {
-            links.append("<\(paginationInfo.next!.absoluteString)>; rel=\"next\"")
+            links.append("<\(paginationInfo.prev!.absoluteString)>; rel=\"prev\"")
         }
         if last {
             links.append("<\(paginationInfo.last!.absoluteString)>; rel=\"last\"")
@@ -37,7 +37,7 @@ final class Samples {
         if first {
             links.append("<\(paginationInfo.first!.absoluteString)>; rel=\"first\"")
         }
-        if inverseOrder {
+        if reverseOrder {
             links.reverse()
         }
         
