@@ -79,6 +79,10 @@ final class GitHubAPIImplementationTests: XCTestCase {
             XCTFail("Wrong error thrown \(error)")
         }
     }
+    
+    func testRateLimit_throwsCorrectError_onExceed() {
+        
+    }
 }
 
 private extension GitHubAPIImplementationTests {
