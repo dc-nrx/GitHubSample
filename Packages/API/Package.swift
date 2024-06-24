@@ -10,12 +10,17 @@ let package = Package(
         .library(
             name: "API",
             targets: ["API"]),
+        .library(
+            name: "Implementation",
+            targets: ["Implementation"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "API"),
+        .target(
+            name: "Implementation"),
         .testTarget(
             name: "APITests",
             dependencies: ["API"]),
