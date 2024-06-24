@@ -21,29 +21,26 @@ public class GitHubAPIImplementation {
     
     private let session: URLSession
     
-    private let rateLimit: RateLimit
-    
-    /// Request timestamps made in the past `rateLimit.interval`
-    private var requestTimestamps = [Date]()
+    private var rateLimiter: RateLimiter
     
     public init(
         baseURL: URL = URL(string: "https://api.github.com")!,
         session: URLSession = .init(configuration: .default),
-        rateLimit: RateLimit = .init(interval: 60*60, limit: 60),
+        rateLimit: RateLimiter.Config = .init(interval: 60*60, limit: 60),
         authToken: String? = nil
     ) {
         self.session = session
         self.baseURL = baseURL
         self.authToken = authToken
-        self.rateLimit = rateLimit
+        self.rateLimiter = RateLimiter(rateLimit)
     }
 }
 
 extension GitHubAPIImplementation {
        
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
-        try checkRateLimit()
-        requestTimestamps.append(.now)
+        try await rateLimiter.checkLimitExceeded(forceAllow: ignoreRateLimit)
+        await rateLimiter.record()
         return try await session.data(for: request)
     }
     
@@ -71,29 +68,7 @@ private extension GitHubAPIImplementation {
         return result
     }
 
-    var rateLimitIsActive: Bool {
-        authToken == nil
-    }
-    
-    func checkRateLimit() throws {
-        cleanupRequestTimestamps()
-        guard !rateLimitIsActive || requestTimestamps.count < rateLimit.limit else {
-            if let oldestTimestamp = requestTimestamps.first {
-                let timeRemainig = Date.now.timeIntervalSince(oldestTimestamp)
-                throw ApiError.rateLimitExceeded(rateLimit, timeRemainig)
-            } else {
-                throw ApiError.rateLimitTooLow(rateLimit.limit)
-            }
-        }
-    }
-
-    func cleanupRequestTimestamps() {
-        var outdatedItemsCount = 0
-        let refDate = Date.now.addingTimeInterval(-rateLimit.interval)
-        for date in requestTimestamps {
-            if date < refDate { outdatedItemsCount += 1 }
-            else { break }
-        }
-        requestTimestamps.removeFirst(outdatedItemsCount)
+    var ignoreRateLimit: Bool {
+        authToken != nil
     }
 }
