@@ -12,20 +12,38 @@ import Foundation
 final class GitHubAPIImplementationTests: XCTestCase {
     
     var sut: GitHubAPIImplementation!
+    let token = "test token"
     
     override func setUpWithError() throws {
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
         let mockSession = URLSession.init(configuration: configuration)
         
-        sut = GitHubAPIImplementation(baseURL: URL(string: "https://sample")!, session: mockSession)
+        sut = GitHubAPIImplementation(baseURL: URL(string: "https://sample")!, session: mockSession, authToken: token)
     }
 
     override func tearDownWithError() throws {
         sut = nil
         updateRequestHandler(to: nil)
+        updateRequestSpy(to: nil)
     }
 
+    func testAuthToken_isCorrect() async {
+        updateRequestHandler(to: .statusCode(200, nil))
+        updateRequestSpy { [token] request in
+            guard let authValue = request.value(forHTTPHeaderField: GitHubAPIImplementation.authKey) else {
+                XCTFail("\(GitHubAPIImplementation.authKey) header is missing from \(request.allHTTPHeaderFields)")
+                return
+            }
+            XCTAssertEqual("Bearer \(token)", authValue)
+        }
+        do {
+            try await sut.fetchUsers(since: 0, perPage: 10)
+        } catch {
+            // Of no importance here
+        }
+    }
+    
     /// There's a better way to implement parameter-based tests
     /// using `Swift Testing` framework - but presently it's available only in beta :(
     func testResponseDataLinkHeader_caseInsensitiveSupport() async throws {
@@ -65,5 +83,9 @@ private extension GitHubAPIImplementationTests {
     
     func updateRequestHandler(to handler: RequestHandler?) {
         MockURLProtocol.requestHandler = handler
+    }
+    
+    func updateRequestSpy(to spy: RequestSpy?) {
+        MockURLProtocol.requestSpy = spy
     }
 }

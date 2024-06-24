@@ -32,6 +32,8 @@ enum RequestHandler {
     }
 }
 
+typealias RequestSpy = (URLRequest) -> ()
+
 class MockURLProtocol: URLProtocol {
 
     /// Handler to test the request and return mock response.
@@ -40,6 +42,8 @@ class MockURLProtocol: URLProtocol {
     /// it still is a reasonable tradeoff in the current case.
     static var requestHandler: RequestHandler?
 
+    static var requestSpy: RequestSpy?
+    
     override func startLoading() {
         guard let handler = MockURLProtocol.requestHandler else {
             fatalError("Handler is unavailable")
@@ -47,7 +51,6 @@ class MockURLProtocol: URLProtocol {
         guard let client else { return }
         
         do {
-            
             let (response, data) = try handler.process(request)
             client.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
 
@@ -62,7 +65,8 @@ class MockURLProtocol: URLProtocol {
     }
     
     override class func canInit(with request: URLRequest) -> Bool {
-        true
+        MockURLProtocol.requestSpy?(request)
+        return true
     }
 
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {

@@ -17,16 +17,21 @@ public enum ApiError: Error {
 
 public class GitHubAPIImplementation {
     
+    static let authKey = "Authorization"
+    
     private let session: URLSession
     private let baseURL: URL
     private let logger = Logger(subsystem: "API", category: "GitHubAPIImplementation")
+    private let authToken: String
     
     public init(
         baseURL: URL = URL(string: "https://api.github.com")!,
-        session: URLSession = .shared
+        session: URLSession = .init(configuration: .default),
+        authToken: String
     ) {
         self.session = session
         self.baseURL = baseURL
+        self.authToken = authToken
     }
 }
 
@@ -48,8 +53,18 @@ extension GitHubAPIImplementation: GitHubAPI {
 
 private extension GitHubAPIImplementation {
     
+    var commonHeaders: [String: String] {
+        [
+            GitHubAPIImplementation.authKey: "Bearer \(authToken)",
+            "accept": "application/vnd.github+json"
+        ]
+    }
+    
     func fetchUsers(url: URL) async throws -> ([User], UrlPaginationInfo) {
-        let (data, response) = try await session.data(from: url)
+        logger.info("requested fetchUsers with \(url)")
+        
+        let request = makeRequest(.get, for: url)
+        let (data, response) = try await session.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse else {
             throw ApiError.invalidServerResponse(response)
         }
@@ -63,9 +78,17 @@ private extension GitHubAPIImplementation {
         //TODO: ensure bg thread on parse
         let usersList = try makeDecoder().decode([User].self, from: data)
         let paginationInfo = try UrlPaginationInfo(githubLinkHeader: linkHeader)
+        
+        logger.info("fetchUsers for \(url) succeeded")
         return (usersList, paginationInfo)
     }
         
+    func makeRequest(_ method: HttpMethod, for url: URL) -> URLRequest {
+        var result = URLRequest(url: url)
+        result.allHTTPHeaderFields = commonHeaders
+        result.httpMethod = method.rawValue
+        return result
+    }
     
     func makeDecoder() -> JSONDecoder {
         .init(keyStrategy: .convertFromSnakeCase)

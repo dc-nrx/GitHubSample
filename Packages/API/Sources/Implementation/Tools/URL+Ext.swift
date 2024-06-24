@@ -15,6 +15,14 @@ enum UrlConstructionError: Error {
 
 extension URL {
     
+    init?(optString: String?) {
+        if let optString {
+            self.init(string: optString)
+        } else {
+            return nil
+        }
+    }
+    
     //TODO: Test
     init(
         base: URL,
