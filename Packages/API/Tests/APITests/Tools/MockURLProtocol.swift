@@ -34,31 +34,30 @@ enum RequestHandler {
 
 class MockURLProtocol: URLProtocol {
 
-    // 1. Handler to test the request and return mock response.
+    /// Handler to test the request and return mock response.
+    ///
+    /// While using `static` is not the best way to go,
+    /// it still is a reasonable tradeoff in the current case.
     static var requestHandler: RequestHandler?
 
     override func startLoading() {
         guard let handler = MockURLProtocol.requestHandler else {
             fatalError("Handler is unavailable")
         }
+        guard let client else { return }
         
         do {
-            // 2. Call handler with received request and capture the tuple of response and data.
+            
             let (response, data) = try handler.process(request)
-
-            // 3. Send received response to the client.
-            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            client.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
 
             if let data = data {
-              // 4. Send received data to the client.
-              client?.urlProtocol(self, didLoad: data)
+              client.urlProtocol(self, didLoad: data)
             }
-
-            // 5. Notify request has been finished.
-            client?.urlProtocolDidFinishLoading(self)
+            
+            client.urlProtocolDidFinishLoading(self)
         } catch {
-            // 6. Notify received error.
-            client?.urlProtocol(self, didFailWithError: error)
+            client.urlProtocol(self, didFailWithError: error)
         }
     }
     
