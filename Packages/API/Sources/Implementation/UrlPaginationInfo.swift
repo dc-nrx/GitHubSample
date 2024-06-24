@@ -16,7 +16,7 @@ public struct UrlPaginationInfo: PaginationInfoProtocol {
     public var first: URL?
     public var last: URL?
 
-    init(linkHeader: String) {
+    init(githubLinkHeader: String) throws {
         fatalError("Not Implemented")
     }
     
