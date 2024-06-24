@@ -37,7 +37,7 @@ extension GitHubAPIImplementation: GitHubAPI {
         let url = try URL(base: baseURL, path: "users", query: [
             "since": since,
             "per_page": perPage
-        ])        
+        ])
         return try await fetchUsers(url: url)
     }
     
@@ -56,7 +56,7 @@ private extension GitHubAPIImplementation {
         guard (200..<400).contains(httpResponse.statusCode) else {
             throw ApiError.httpError(httpResponse.statusCode)
         }
-        guard let linkHeader = httpResponse.allHeaderFields["link"] as? String else {
+        guard let linkHeader = httpResponse.value(forHTTPHeaderField: "link") else {
             throw ApiError.failedToRetrievePaginationInfoHeader(httpResponse)
         }
         
