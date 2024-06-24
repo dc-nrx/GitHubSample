@@ -29,7 +29,7 @@ private extension GitHubAPIImplementation {
         logger.info("requested fetchUsers with \(url)")
         
         let request = makeRequest(.get, for: url)
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await data(for: request)
         guard let httpResponse = response as? HTTPURLResponse else {
             throw ApiError.invalidServerResponse(response)
         }

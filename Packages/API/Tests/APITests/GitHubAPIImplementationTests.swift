@@ -12,14 +12,13 @@ import Foundation
 final class GitHubAPIImplementationTests: XCTestCase {
     
     var sut: GitHubAPIImplementation!
-    let token = "test token"
     
     override func setUpWithError() throws {
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
         let mockSession = URLSession.init(configuration: configuration)
         
-        sut = GitHubAPIImplementation(baseURL: URL(string: "https://sample")!, session: mockSession, authToken: token)
+        sut = GitHubAPIImplementation(baseURL: URL(string: "https://sample")!, session: mockSession)
     }
 
     override func tearDownWithError() throws {
@@ -28,7 +27,10 @@ final class GitHubAPIImplementationTests: XCTestCase {
         updateRequestSpy(to: nil)
     }
 
+    // TODO: Add requestSpy tests to check `since` and `per_page` params are passed correctly.
     func testAuthToken_isCorrect() async {
+        let token = "test token"
+        sut.authToken = token
         updateRequestHandler(to: .statusCode(200, nil))
         updateRequestSpy { [token] request in
             guard let authValue = request.value(forHTTPHeaderField: GitHubAPIImplementation.authKey) else {

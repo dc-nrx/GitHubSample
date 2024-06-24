@@ -14,15 +14,17 @@ public class GitHubAPIImplementation {
     
     static let authKey = "Authorization"
     
-    let session: URLSession
+    public var authToken: String?    
+    
     let baseURL: URL
     let logger = Logger(subsystem: "API", category: "GitHubAPIImplementation")
-    let authToken: String
+    
+    private let session: URLSession
     
     public init(
         baseURL: URL = URL(string: "https://api.github.com")!,
         session: URLSession = .init(configuration: .default),
-        authToken: String
+        authToken: String? = nil
     ) {
         self.session = session
         self.baseURL = baseURL
@@ -33,12 +35,19 @@ public class GitHubAPIImplementation {
 extension GitHubAPIImplementation {
     
     var commonHeaders: [String: String] {
-        [
-            GitHubAPIImplementation.authKey: "Bearer \(authToken)",
+        var result = [
             "accept": "application/vnd.github+json"
         ]
+        if let authToken {
+            result[GitHubAPIImplementation.authKey] = "Bearer \(authToken)"
+        }
+        return result
     }
-        
+   
+    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        try await session.data(for: request)
+    }
+    
     func makeRequest(_ method: HttpMethod, for url: URL) -> URLRequest {
         var result = URLRequest(url: url)
         result.allHTTPHeaderFields = commonHeaders
