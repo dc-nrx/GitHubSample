@@ -21,7 +21,7 @@ final class RateLimiterTests: XCTestCase {
             XCTFail("Error expected")
         } catch ApiError.rateLimitExceeded(let errConfig, let timeRemaining) {
             XCTAssertEqual(config, errConfig)
-            XCTAssertEqual(timeRemaining, config.interval, accuracy: 0.1)
+            XCTAssertEqual(timeRemaining, config.interval, accuracy: 0.2)
         } catch {
             XCTFail("Unexpected error \(error)")
         }

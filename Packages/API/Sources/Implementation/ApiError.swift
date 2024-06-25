@@ -17,4 +17,6 @@ public enum ApiError: Error {
     case rateLimitExceeded(RateLimiter.Config, _ timeRemaining: TimeInterval)
     case rateLimitTooLow(Int)
     case rateLimiterRecordsOrderViolation(_ latestRecord: Date, _ newRecord: Date)
+    
+    case unsupportedKey(String)
 }
