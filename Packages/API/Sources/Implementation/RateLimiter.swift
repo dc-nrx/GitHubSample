@@ -32,7 +32,8 @@ public actor RateLimiter {
     public var config: Config
     
     /**
-     Request timestamps made in the past `rateLimit.interval` seconds.
+     The records that have been tracked and have not been cleaned up. made in the past `rateLimit.interval` seconds.
+     See `cleanupOutdatedRecords(refRecord:)` for details.
      
      `Record` typealias is used in case we will want to alter/extend it in the future.
      */
@@ -56,7 +57,7 @@ public actor RateLimiter {
         self.config = config
         self.records = persistedRecords
         
-        logger.debug("Initialized with interval: \(config.interval), limit: \(config.limit), persistedRecords: \(persistedRecords)")
+        logger.info("Initialized with interval: \(config.interval), limit: \(config.limit), persistedRecords: \(persistedRecords)")
     }
     
 }
@@ -67,7 +68,7 @@ public extension RateLimiter {
      - parameter forceAllow: If `true`, cleans up the outdated request timestamps and returns.
      Use it if the rate limiter is temporary disabled. Added for convenience reasons.
      
-     - parameter refRecord: The reference date against which the number of records is counted.
+     - parameter refDate: The reference date against which the number of records is counted.
      
      - parameter cleanupOutdatedRecords: If `true`, cleans up the outdated records in-place. Can be
      done explicitly via `cleanupOutdatedRecords`.
@@ -104,6 +105,7 @@ public extension RateLimiter {
         cleanupOutdatedRecords: Bool = true,
         ignoreOrderViolation: Bool = true
     ) throws {
+        logger.info("Record requested for \(rec), ignoreLimit: \(ignoreLimitExceededCheck), cleanup: \(cleanupOutdatedRecords), ignoreOrder: \(ignoreOrderViolation)")
         if !ignoreLimitExceededCheck {
             try checkLimitExceeded(refDate: rec, cleanupOutdatedRecords: cleanupOutdatedRecords)
         }
@@ -141,15 +143,12 @@ public extension RateLimiter {
     }
     
     /**
+     Clean up all records that have been recorded earlier than `config.interval` seconds before `refRecord`.
+     
      While the same effect can be achieved via `records(relevantTo:, cleanupInPlace:)` call,
      this method adds clarity to the interface.
      */
     func cleanupOutdatedRecords(refRecord: Record = .now) {
         _ = records(relevantTo: refRecord, cleanupInPlace: true)
     }
-}
-
-private extension RateLimiter {
-
-
 }
