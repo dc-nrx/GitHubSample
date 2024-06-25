@@ -46,8 +46,8 @@ final class GitHubAPIImplementationTests: XCTestCase {
         }
     }
     
-    /// There's a better way to implement parameter-based tests
-    /// using `Swift Testing` framework - but presently it's available only in beta :(
+    /// There's a better way to implement parameter-based tests using
+    /// `Swift Testing` framework - but presently it's available only in beta :(
     func testResponseDataLinkHeader_caseInsensitiveSupport() async throws {
         let linkHeaderTest: (String) async -> () = { [self] linkHeaderKey in
             let customResponse = HTTPURLResponse(url: URL(string: "http://sample")!, statusCode: 200, httpVersion: nil, headerFields: [linkHeaderKey: "zzzz"])!

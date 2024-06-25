@@ -43,10 +43,15 @@ extension OnDiskPersistanceProvider: PersistanceProvider {
         try data.write(to: url, options: writingOptions)
     }
     
-    public func readValue<T: Codable>(for key: String) async throws -> T {
+    public func readValue<T: Codable>(for key: String) async throws -> T? {
         let decoder = JSONDecoder()
         let url = try url(for: key)
+        guard fileManager.isReadableFile(atPath: url.path) else {
+            return nil
+        }
+        
         let data = try Data(contentsOf: url)
+        guard !data.isEmpty else { return nil }
         return try decoder.decode(T.self, from: data)
     }
     

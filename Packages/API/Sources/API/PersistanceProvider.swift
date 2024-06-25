@@ -9,6 +9,6 @@ import Foundation
 
 public protocol PersistanceProvider {
     func store<T: Codable>(_ value: T, for key: String) async throws
-    func readValue<T: Codable>(for key: String) async throws -> T
+    func readValue<T: Codable>(for key: String) async throws -> T?
     func deleteAll() async throws
 }

@@ -33,13 +33,20 @@ final class OnDiskPersistanceProviderTests: XCTestCase {
         try await _testWriteThrows(for: "/ab")
     }
 
+    func testReadMissingIntValue_returnsNil() async throws {
+        let val: Int? = try await sut.readValue(for: "key")
+        XCTAssertNil(val)
+    }
+    
+    // TODO: Test for deleteAll
+    // TODO: Test for overwrite same key
 }
 
 private extension OnDiskPersistanceProviderTests {
     
     func _testReadWriteSuccessful(_ value: String, for key: String) async throws {
         try await sut.store(value, for: key)
-        let retrievedValue: String = try await sut.readValue(for: key)
+        let retrievedValue: String? = try await sut.readValue(for: key)
         XCTAssertEqual(value, retrievedValue)
     }
     
