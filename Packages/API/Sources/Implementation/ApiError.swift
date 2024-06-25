@@ -13,6 +13,8 @@ public enum ApiError: Error {
     case invalidServerResponse(URLResponse)
     case httpError(Int)
     case duplicatePaginationLink(String)
+    
     case rateLimitExceeded(RateLimiter.Config, _ timeRemaining: TimeInterval)
     case rateLimitTooLow(Int)
+    case rateLimiterRecordsOrderViolation(_ latestRecord: Date, _ newRecord: Date)
 }

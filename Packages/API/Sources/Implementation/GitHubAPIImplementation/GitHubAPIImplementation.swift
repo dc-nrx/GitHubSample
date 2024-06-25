@@ -19,9 +19,10 @@ public class GitHubAPIImplementation {
     let baseURL: URL
     let logger = Logger(subsystem: "API", category: "GitHubAPIImplementation")
     
+    /// `session` is private to ensure proper tracking of each request via `rateLimiter`.
     private let session: URLSession
     
-    private var rateLimiter: RateLimiter
+    private let rateLimiter: RateLimiter
     
     public init(
         baseURL: URL = URL(string: "https://api.github.com")!,
@@ -40,7 +41,7 @@ extension GitHubAPIImplementation {
        
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
         try await rateLimiter.checkLimitExceeded(forceAllow: ignoreRateLimit)
-        await rateLimiter.record()
+        try await rateLimiter.record()
         return try await session.data(for: request)
     }
     
