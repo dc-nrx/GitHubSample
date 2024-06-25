@@ -35,7 +35,7 @@ public class OnDiskPersistanceProvider {
  */
 extension OnDiskPersistanceProvider: PersistanceProvider {
     
-    public func store<T: Codable>(_ value: T, for key: String) async throws {
+    public func write<T: Codable>(_ value: T, for key: String) async throws {
         let encoder = JSONEncoder()
         let data = try encoder.encode(value)
         let url = try url(for: key)
@@ -57,6 +57,7 @@ extension OnDiskPersistanceProvider: PersistanceProvider {
     
     public func deleteAll() async throws {
         try fileManager.removeItem(at: directory)
+        try createDirectoryIfNeeded()
     }
 }
 
