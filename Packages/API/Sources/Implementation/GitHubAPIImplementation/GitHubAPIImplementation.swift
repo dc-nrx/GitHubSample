@@ -40,8 +40,7 @@ public class GitHubAPIImplementation {
 extension GitHubAPIImplementation {
        
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
-        try await rateLimiter.checkLimitExceeded(forceAllow: ignoreRateLimit)
-        try await rateLimiter.record()
+        try await rateLimiter.record(ignoreLimitExceededCheck: ignoreRateLimit)
         return try await session.data(for: request)
     }
     

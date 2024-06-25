@@ -7,11 +7,13 @@
 
 import Foundation
 import API
+import OSLog
 
 /// `actor` to prevent race conditions during `requestTimestamps` alterations.
 public actor RateLimiter {
+    public typealias Record = Date
     
-    public struct Config {
+    public struct Config: Equatable {
         /**
          The time interval in seconds, during which the limit is applicable.
          */
@@ -29,8 +31,14 @@ public actor RateLimiter {
     }
     public var config: Config
     
-    /// Request timestamps made in the past `rateLimit.interval` seconds.
-    private var records: [Date]
+    /**
+     Request timestamps made in the past `rateLimit.interval` seconds.
+     
+     `Record` typealias is used in case we will want to alter/extend it in the future.
+     */
+    private var records: [Record]
+    
+    private let logger = Logger(subsystem: "Implementation", category: "RateLimiter")
     
     /**
      The one and only.
@@ -43,10 +51,12 @@ public actor RateLimiter {
      */
     public init(
         _ config: Config,
-        persistedRequestTimestamps: [Date] = .init()
+        persistedRecords: [Record] = .init()
     ) {
         self.config = config
-        self.records = persistedRequestTimestamps
+        self.records = persistedRecords
+        
+        logger.debug("Initialized with interval: \(config.interval), limit: \(config.limit), persistedRecords: \(persistedRecords)")
     }
     
 }
@@ -57,20 +67,19 @@ public extension RateLimiter {
      - parameter forceAllow: If `true`, cleans up the outdated request timestamps and returns.
      Use it if the rate limiter is temporary disabled. Added for convenience reasons.
      
-     - parameter refDate: The reference date against which the number of records is counted.
+     - parameter refRecord: The reference date against which the number of records is counted.
      
      - parameter cleanupOutdatedRecords: If `true`, cleans up the outdated records in-place. Can be
      done explicitly via `cleanupOutdatedRecords`.
      */
     func checkLimitExceeded(
-        forceAllow: Bool = false,
         refDate: Date = .now,
         cleanupOutdatedRecords: Bool = true
     ) throws {
         let relevantRecords = records(relevantTo: refDate, cleanupInPlace: cleanupOutdatedRecords)
-        guard forceAllow || relevantRecords.count < config.limit else {
+        guard relevantRecords.count < config.limit else {
             if let oldestTimestamp = relevantRecords.first {
-                let timeRemainig = refDate.timeIntervalSince(oldestTimestamp)
+                let timeRemainig = config.interval - refDate.timeIntervalSince(oldestTimestamp)
                 throw ApiError.rateLimitExceeded(config, timeRemainig)
             } else {
                 // config.limit <= 0
@@ -90,14 +99,22 @@ public extension RateLimiter {
      present any threat, and it would be wiser to avoid unneeded `throw`s in such cases.
      */
     func record(
-        _ timestamp: Date = .now,
+        _ rec: Record = .now,
+        ignoreLimitExceededCheck: Bool = false,
+        cleanupOutdatedRecords: Bool = true,
         ignoreOrderViolation: Bool = true
     ) throws {
-        let lastRecord = records.last ?? .distantPast
-        guard ignoreOrderViolation || lastRecord <= timestamp else {
-            throw ApiError.rateLimiterRecordsOrderViolation(lastRecord, timestamp)
+        if !ignoreLimitExceededCheck {
+            try checkLimitExceeded(refDate: rec, cleanupOutdatedRecords: cleanupOutdatedRecords)
         }
-        records.append(timestamp)
+        
+        let lastRecord = records.last ?? .distantPast
+        guard ignoreOrderViolation || lastRecord <= rec else {
+            throw ApiError.rateLimiterRecordsOrderViolation(lastRecord, rec)
+        }
+        records.append(rec)
+        
+        logger.debug("Record \(rec) added. Total count: \(self.records.count)")
     }
     
     // TODO: Doc
@@ -105,11 +122,11 @@ public extension RateLimiter {
     func records(
         relevantTo refDate: Date = .now,
         cleanupInPlace: Bool = true
-    ) -> ArraySlice<Date> {
+    ) -> ArraySlice<Record> {
         var outdatedItemsCount = 0
         let edgeDate = refDate.addingTimeInterval(-config.interval)
-        for date in records {
-            if date < edgeDate { outdatedItemsCount += 1 }
+        for rec in records {
+            if rec < edgeDate { outdatedItemsCount += 1 }
             else { break }
             /// Could've used binary search insted (as `requestTimestamps` is a sorted array) and
             /// get O(ln n) instead of O(n), but obviously it wouldn't make much difference in our scenario.
@@ -118,6 +135,7 @@ public extension RateLimiter {
         let result = records[outdatedItemsCount...]
         if cleanupInPlace {
             records = Array(result)
+            logger.debug("\(outdatedItemsCount) records cleand up against refDate: \(refDate)")
         }
         return result
     }
@@ -126,8 +144,8 @@ public extension RateLimiter {
      While the same effect can be achieved via `records(relevantTo:, cleanupInPlace:)` call,
      this method adds clarity to the interface.
      */
-    func cleanupOutdatedRecords(refDate: Date = .now) {
-        _ = records(relevantTo: refDate, cleanupInPlace: true)
+    func cleanupOutdatedRecords(refRecord: Record = .now) {
+        _ = records(relevantTo: refRecord, cleanupInPlace: true)
     }
 }
 
