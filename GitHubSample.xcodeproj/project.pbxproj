@@ -46,6 +46,7 @@
 		4F7A442E2C29645E00F294C2 /* GitHubSampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubSampleUITests.swift; sourceTree = "<group>"; };
 		4F7A44302C29645E00F294C2 /* GitHubSampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubSampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4F7A443D2C2964F200F294C2 /* API */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = API; path = Packages/API; sourceTree = "<group>"; };
+		4F7A443E2C2B3CB400F294C2 /* ViewModel */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ViewModel; path = Packages/ViewModel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +77,7 @@
 		4F7A44062C29645C00F294C2 = {
 			isa = PBXGroup;
 			children = (
+				4F7A443E2C2B3CB400F294C2 /* ViewModel */,
 				4F7A443D2C2964F200F294C2 /* API */,
 				4F7A44112C29645C00F294C2 /* GitHubSample */,
 				4F7A44232C29645E00F294C2 /* GitHubSampleTests */,
