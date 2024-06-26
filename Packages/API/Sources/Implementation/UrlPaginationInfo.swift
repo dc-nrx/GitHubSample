@@ -8,15 +8,10 @@
 import Foundation
 import API
 
-public struct UrlPaginationInfo: PaginationInfoProtocol, Equatable {
-    public typealias Token = URL
-
-    public var next: URL?
-    public var prev: URL?
-    public var first: URL?
-    public var last: URL?
+public extension UrlPaginationInfo {
 
     init(githubLinkHeader: String) throws {
+        self.init()
         let records = githubLinkHeader.components(separatedBy: ",")
         
         for record in records {
@@ -26,14 +21,6 @@ public struct UrlPaginationInfo: PaginationInfoProtocol, Equatable {
             if try safeSet(keyPath: \.prev, linkKey: "prev", from: record) { continue }
         }
     }
-    
-    init(next: URL? = nil, prev: URL? = nil, first: URL? = nil, last: URL? = nil) {
-        self.next = next
-        self.prev = prev
-        self.first = first
-        self.last = last
-    }
-    
 }
 
 private extension UrlPaginationInfo {

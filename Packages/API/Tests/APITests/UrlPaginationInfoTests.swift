@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import API
 @testable import Implementation
 
 final class UrlPaginationInfoTests: XCTestCase {
