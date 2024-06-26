@@ -9,9 +9,7 @@ import Foundation
 import API
 import OSLog
 
-public class GitHubAPIImplementation {
-    public typealias PaginationInfo = UrlPaginationInfo
-    
+public class GitHubAPIImplementation {    
     static let authKey = "Authorization"
     
     public var authToken: String?    

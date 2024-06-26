@@ -3,12 +3,12 @@
 
 import Foundation
 
-public typealias GitHubAPI = GithubUsersAPI
+public typealias GitHubAPI = PaginationAPI
 
-public protocol GithubUsersAPI {
+public protocol PaginationAPI {
 
     /// `perPage`  <= 100
-    func fetchUsers(since: User.ID, perPage: Int) async throws -> ([User], UrlPaginationInfo)
+    func fetch(since: User.ID, perPage: Int) async throws -> ([User], PaginationInfo)
     
-    func fetchUsers(pageToken: UrlPaginationInfo.Token) async throws -> ([User], UrlPaginationInfo)
+    func fetch(pageToken: PaginationInfo.Token) async throws -> ([User], PaginationInfo)
 }

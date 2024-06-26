@@ -8,7 +8,7 @@
 import Foundation
 import API
 
-public extension UrlPaginationInfo {
+public extension PaginationInfo {
 
     init(githubLinkHeader: String) throws {
         self.init()
@@ -23,10 +23,10 @@ public extension UrlPaginationInfo {
     }
 }
 
-private extension UrlPaginationInfo {
+private extension PaginationInfo {
     
     mutating func safeSet(
-        keyPath: WritableKeyPath<UrlPaginationInfo, URL?>,
+        keyPath: WritableKeyPath<PaginationInfo, URL?>,
         linkKey: String,
         from record: String
     ) throws -> Bool {

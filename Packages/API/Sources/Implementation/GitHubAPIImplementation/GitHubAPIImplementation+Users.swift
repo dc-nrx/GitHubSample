@@ -8,9 +8,9 @@
 import Foundation
 import API
 
-extension GitHubAPIImplementation: GithubUsersAPI {
+extension GitHubAPIImplementation: PaginationAPI {
     
-    public func fetchUsers(since: User.ID, perPage: Int) async throws -> ([User], UrlPaginationInfo) {
+    public func fetch(since: User.ID, perPage: Int) async throws -> ([User], PaginationInfo) {
         let url = try URL(base: baseURL, path: "users", query: [
             "since": since,
             "per_page": perPage
@@ -18,14 +18,14 @@ extension GitHubAPIImplementation: GithubUsersAPI {
         return try await fetchUsers(url: url)
     }
     
-    public func fetchUsers(pageToken: URL) async throws -> ([User], UrlPaginationInfo) {
+    public func fetch(pageToken: URL) async throws -> ([User], PaginationInfo) {
         try await fetchUsers(url: pageToken)
     }
 }
 
 private extension GitHubAPIImplementation {
     
-    func fetchUsers(url: URL) async throws -> ([User], UrlPaginationInfo) {
+    func fetchUsers(url: URL) async throws -> ([User], PaginationInfo) {
         logger.info("requested fetchUsers with \(url)")
         
         let request = makeRequest(.get, for: url)
@@ -42,7 +42,7 @@ private extension GitHubAPIImplementation {
         
         //TODO: ensure bg thread on parse
         let usersList = try makeDecoder().decode([User].self, from: data)
-        let paginationInfo = try UrlPaginationInfo(githubLinkHeader: linkHeader)
+        let paginationInfo = try PaginationInfo(githubLinkHeader: linkHeader)
         
         logger.info("fetchUsers for \(url) succeeded")
         return (usersList, paginationInfo)

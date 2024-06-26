@@ -7,9 +7,9 @@
 
 import Foundation
 
-public typealias UrlPaginationInfo = PaginationInfo<URL>
+public typealias PaginationInfo = GenericPaginationInfo<URL>
 
-public struct PaginationInfo<T> {
+public struct GenericPaginationInfo<T> {
     public typealias Token = T
     
     public var next: Token?
@@ -25,4 +25,4 @@ public struct PaginationInfo<T> {
     }
 }
 
-extension PaginationInfo: Equatable where T: Equatable { }
+extension GenericPaginationInfo: Equatable where T: Equatable { }
