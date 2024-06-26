@@ -20,7 +20,10 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "ViewModel",
-            dependencies: ["API"]),
+            dependencies: [
+                "API",
+                .product(name: "Preview", package: "API")
+            ]),
         .testTarget(
             name: "ViewModelTests",
             dependencies: ["ViewModel"]),

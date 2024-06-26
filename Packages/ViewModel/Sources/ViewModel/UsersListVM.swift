@@ -6,8 +6,8 @@ import SwiftUI
 import API
 
 @MainActor
-public class UsersListVM: ObservableObject {
-    public typealias Item = User
+public class PaginatorVM<API: PaginationAPI>: ObservableObject {
+    public typealias Item = API.Item
         
     @Published
     public var items = [Item]()
@@ -26,12 +26,12 @@ public class UsersListVM: ObservableObject {
     public private(set) var pageSize: Int
     public private(set) var referenceID: Item.ID
     
-    private let api: GitHubAPI
-    private var nextPage: PaginationInfo.Token?
+    private let api: API
+    private var nextPage: API.PaginationInfo.Token?
     private var fetchTask: Task<Void, Never>?
     
     init(
-        api: GitHubAPI,
+        api: API,
         referenceID: Item.ID,
         pageSize: Int,
         distanceBeforePrefetch: Int = 10
@@ -43,7 +43,7 @@ public class UsersListVM: ObservableObject {
     }
 }
 
-public extension UsersListVM {
+public extension PaginatorVM {
     
     func onAppear() {
         if items.isEmpty {
@@ -64,7 +64,7 @@ public extension UsersListVM {
     // TODO: Support refetch last page
 }
 
-private extension UsersListVM {
+private extension PaginatorVM {
     
     func requestNextPageFetch() {
         guard fetchTask == nil else { return }
@@ -74,12 +74,13 @@ private extension UsersListVM {
         fetchTask = Task { [weak self] in
             guard let self else { return }
             do {
-                let (newItems, paginationInfo) = try await api.fetchUsers(pageToken: nextPage)
+                let (newItems, paginationInfo) = try await api.fetch(pageToken: nextPage)
                 self.items.append(contentsOf: newItems)
                 self.nextPage = paginationInfo.next
             } catch {
                 self.errorMessage = "Error occured: \(error)"
             }
+            self.fetchTask = nil
             showLoadingNextPage = false
         }
     }
@@ -91,12 +92,13 @@ private extension UsersListVM {
         fetchTask = Task { [weak self] in
             guard let self else { return }
             do {
-                let (newItems, paginationInfo) = try await api.fetchUsers(since: referenceID, perPage: pageSize)
+                let (newItems, paginationInfo) = try await api.fetch(since: referenceID, perPage: pageSize)
                 self.items = newItems
                 self.nextPage = paginationInfo.next
             } catch {
                 self.errorMessage = "Error occured: \(error)"
             }
+            self.fetchTask = nil
             showRefreshControl = false
         }
     }
