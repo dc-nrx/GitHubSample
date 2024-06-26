@@ -14,8 +14,10 @@ public struct IntPaginationInfo: PaginationInfoProtocol {
 
 public class GitHubAPIMock {
     
-    public var usersPool = [User]()
+    public var usersPool = Samples.users
     public private(set) var perPage = 30
+    
+    public init() { }
 }
 
 extension GitHubAPIMock: UsersPaginator {
@@ -24,11 +26,13 @@ extension GitHubAPIMock: UsersPaginator {
     public func fetch(since: User.ID, perPage: Int) async throws -> ([User], IntPaginationInfo) {
         let users = usersPool.dropFirst(since).prefix(perPage)
         self.perPage = perPage
-        return (Array(users), IntPaginationInfo(next: 2))
+        let next = (users.last?.id != usersPool.last?.id) ? 1 : nil
+        return (Array(users), IntPaginationInfo(next: next))
     }
     
     public func fetch(pageToken: Int) async throws -> ([User], IntPaginationInfo) {
         let users = usersPool.dropFirst(pageToken * perPage).prefix(perPage)
-        return (Array(users), IntPaginationInfo(next: pageToken + 1))
+        let next = (users.last?.id != usersPool.last?.id) ? pageToken + 1 : nil
+        return (Array(users), IntPaginationInfo(next: next))
     }
 }

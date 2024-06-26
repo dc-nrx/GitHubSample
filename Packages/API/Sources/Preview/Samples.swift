@@ -44,4 +44,7 @@ public final class Samples {
         
         return links.joined(separator: ",")
     }
+    
+    /// Global is already `lazy`, thus no performance concern for production code
+    public static var users = [User](jsonFile: "users70_page1") + [User](jsonFile: "users70_page2")
 }
