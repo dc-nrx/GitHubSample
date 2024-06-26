@@ -5,17 +5,22 @@ import PackageDescription
 
 let package = Package(
     name: "ViewModel",
+    platforms: [.iOS(.v16), .macOS(.v14)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "ViewModel",
             targets: ["ViewModel"]),
     ],
+    dependencies: [
+        .package(path: "../API"),
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "ViewModel"),
+            name: "ViewModel",
+            dependencies: ["API"]),
         .testTarget(
             name: "ViewModelTests",
             dependencies: ["ViewModel"]),
