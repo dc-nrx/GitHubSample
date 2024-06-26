@@ -9,20 +9,30 @@ import SwiftUI
 import UI
 import Preview
 import ViewModel
+import API
+import Implementation
 
 @main
 struct GitHubSampleApp: App {
     
-    @MainActor
-    let vm = PaginatorVM(
-        api: GitHubAPIMock(delay: 0.4),
-        referenceID: 0,
-        pageSize: 30
-    )
+    @Environment(\.scenePhase) 
+    var scenePhase
     
+    @StateObject
+    var dependencyContainer = DependencyContainer()
+        
     var body: some Scene {
         WindowGroup {
-            UsersView(vm: vm)
+            NavigationStack {
+                if let rootVM = dependencyContainer.rootVM {
+                    UsersView(vm: rootVM)
+                } else {
+                    Text("Initialization...")
+                }
+            }
+        }
+        .onChange(of: scenePhase) { oldValue, newValue in
+            dependencyContainer.scenePhaseChanged(to: newValue)
         }
     }
 }

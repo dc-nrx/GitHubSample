@@ -25,13 +25,13 @@ public class GitHubAPIImplementation {
     public init(
         baseURL: URL = URL(string: "https://api.github.com")!,
         session: URLSession = .init(configuration: .default),
-        rateLimit: RateLimiter.Config = .init(interval: 60*60, limit: 60),
+        rateLimiter: RateLimiter = .init(),
         authToken: String? = nil
     ) {
         self.session = session
         self.baseURL = baseURL
         self.authToken = authToken
-        self.rateLimiter = RateLimiter(rateLimit)
+        self.rateLimiter = rateLimiter
     }
 }
 

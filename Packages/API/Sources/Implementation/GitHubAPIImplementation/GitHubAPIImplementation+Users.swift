@@ -27,7 +27,7 @@ extension GitHubAPIImplementation: UsersPaginator {
 private extension GitHubAPIImplementation {
     
     func fetchUsers(url: URL) async throws -> ([User], PaginationInfo) {
-        logger.info("requested fetchUsers with \(url)")
+        logger.debug("requested fetchUsers with \(url)")
         
         let request = makeRequest(.get, for: url)
         let (data, response) = try await data(for: request)
@@ -45,7 +45,7 @@ private extension GitHubAPIImplementation {
         let usersList = try makeDecoder().decode([User].self, from: data)
         let paginationInfo = try PaginationInfo(githubLinkHeader: linkHeader)
         
-        logger.info("fetchUsers for \(url) succeeded")
+        logger.debug("fetchUsers for \(url) succeeded")
         return (usersList, paginationInfo)
     }
 }

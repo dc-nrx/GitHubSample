@@ -16,7 +16,7 @@ public class OnDiskPersistanceProvider {
     private let directory: URL
     private let writingOptions: Data.WritingOptions
     
-    init(
+    public init(
         directory: URL = .documentsDirectory.appending(path: "OnDiskPersistanceProvider"),
         fileManager: FileManager = .default,
         writingOptions: Data.WritingOptions = [.atomic, .completeFileProtection]

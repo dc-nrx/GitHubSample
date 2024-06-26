@@ -15,13 +15,16 @@ public struct IntPaginationInfo: PaginationInfoProtocol {
 public class GitHubAPIMock {
     
     public var usersPool = Samples.users
-    public var delay: TimeInterval
+    public var firstDelay: TimeInterval
+    public var nextDelay: TimeInterval
     public private(set) var perPage = 30
     
     public init(
-        delay: TimeInterval = 0
+        firstDelay: TimeInterval = 0,
+        nextDelay: TimeInterval = 0
     ) {
-        self.delay = delay
+        self.firstDelay = firstDelay
+        self.nextDelay = nextDelay
     }
 }
 
@@ -33,7 +36,7 @@ extension GitHubAPIMock: UsersPaginator {
         self.perPage = perPage
         let next = (users.last?.id != usersPool.last?.id) ? 1 : nil
         
-        try await Task.sleep(seconds: delay)
+        try await Task.sleep(seconds: firstDelay)
         return (Array(users), IntPaginationInfo(next: next))
     }
     
@@ -41,7 +44,7 @@ extension GitHubAPIMock: UsersPaginator {
         let users = usersPool.dropFirst(pageToken * perPage).prefix(perPage)
         let next = (users.last?.id != usersPool.last?.id) ? pageToken + 1 : nil
         
-        try await Task.sleep(seconds: delay)
+        try await Task.sleep(seconds: nextDelay)
         return (Array(users), IntPaginationInfo(next: next))
     }
 }

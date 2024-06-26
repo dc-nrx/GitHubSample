@@ -23,29 +23,38 @@ public struct UsersView<Api: PaginationAPI>: View where Api.Item == User {
     }
     
     public var body: some View {
-        List(vm.items) { item in
-            cell(item)
-                .onAppear { vm.itemShown(item) }
+        List {
+            Section {
+                ForEach(vm.items) { item in
+                    cell(item)
+                        .onAppear { vm.itemShown(item) }
+                }
+            }
         }
+        .onAppear(perform: vm.onAppear)
         .refreshable {
             await vm.asyncRefresh()
         }
-        .onAppear(perform: vm.onAppear)
+        .navigationTitle("Users")
+        .toolbar {
+            ConnectionIcon(vm.connectionState)
+                .animation(.default, value: vm.connectionState)
+        }
     }
     
     @ViewBuilder
     func cell(_ user: User) -> some View {
         HStack {
-            WebImage(url: user.avatarUrl) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: imageSide)
-                    .shadow(radius: 2)
-            } placeholder: {
-                Image(systemName: "photo")
-            }
-            .background(.yellow)
+//            WebImage(url: user.avatarUrl) { image in
+//                image
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .frame(width: imageSide, height: imageSide)
+//                    .shadow(radius: 2)
+//            } placeholder: {
+//                Image(systemName: "photo")
+//            }
+//            .background(.yellow)
             
             VStack(alignment: .leading) {
                 Text("id: \(user.id)")
@@ -61,10 +70,12 @@ public struct UsersView<Api: PaginationAPI>: View where Api.Item == User {
 
 #Preview {
     let vm = PaginatorVM(
-        api: GitHubAPIMock(delay: 0.4),
+        api: GitHubAPIMock(nextDelay: 2),
         referenceID: 0,
         pageSize: 30
     )
     
-    return UsersView(vm: vm)
+    return NavigationStack {
+        UsersView(vm: vm)
+    }
 }

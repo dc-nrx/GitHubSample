@@ -8,12 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		4F7A44132C29645C00F294C2 /* GitHubSampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7A44122C29645C00F294C2 /* GitHubSampleApp.swift */; };
-		4F7A44152C29645C00F294C2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7A44142C29645C00F294C2 /* ContentView.swift */; };
 		4F7A44172C29645E00F294C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4F7A44162C29645E00F294C2 /* Assets.xcassets */; };
 		4F7A441B2C29645E00F294C2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4F7A441A2C29645E00F294C2 /* Preview Assets.xcassets */; };
 		4F7A44252C29645E00F294C2 /* GitHubSampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7A44242C29645E00F294C2 /* GitHubSampleTests.swift */; };
 		4F7A442F2C29645E00F294C2 /* GitHubSampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7A442E2C29645E00F294C2 /* GitHubSampleUITests.swift */; };
 		4F7A44312C29645E00F294C2 /* GitHubSampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7A44302C29645E00F294C2 /* GitHubSampleUITestsLaunchTests.swift */; };
+		4FA0CC342C2C73C3008B54A9 /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA0CC332C2C73C3008B54A9 /* DependencyContainer.swift */; };
+		4FA0CC372C2C7EEA008B54A9 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA0CC362C2C7EEA008B54A9 /* SDWebImageSwiftUI */; };
 		4FA718902C2C45F400266D61 /* API in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA7188F2C2C45F400266D61 /* API */; };
 		4FA718922C2C45F400266D61 /* Implementation in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA718912C2C45F400266D61 /* Implementation */; };
 		4FA718942C2C45F400266D61 /* Preview in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA718932C2C45F400266D61 /* Preview */; };
@@ -41,7 +42,6 @@
 /* Begin PBXFileReference section */
 		4F7A440F2C29645C00F294C2 /* GitHubSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GitHubSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F7A44122C29645C00F294C2 /* GitHubSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubSampleApp.swift; sourceTree = "<group>"; };
-		4F7A44142C29645C00F294C2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4F7A44162C29645E00F294C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4F7A44182C29645E00F294C2 /* GitHubSample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GitHubSample.entitlements; sourceTree = "<group>"; };
 		4F7A441A2C29645E00F294C2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -52,6 +52,7 @@
 		4F7A44302C29645E00F294C2 /* GitHubSampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubSampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4F7A443D2C2964F200F294C2 /* API */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = API; path = Packages/API; sourceTree = "<group>"; };
 		4F7A443E2C2B3CB400F294C2 /* ViewModel */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ViewModel; path = Packages/ViewModel; sourceTree = "<group>"; };
+		4FA0CC332C2C73C3008B54A9 /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
 		4FD8B9582C2C344300E5A6D9 /* UI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = UI; path = Packages/UI; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -60,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FA0CC372C2C7EEA008B54A9 /* SDWebImageSwiftUI in Frameworks */,
 				4FA718982C2C45F400266D61 /* ViewModel in Frameworks */,
 				4FA718962C2C45F400266D61 /* UI in Frameworks */,
 				4FA718942C2C45F400266D61 /* Preview in Frameworks */,
@@ -113,7 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				4F7A44122C29645C00F294C2 /* GitHubSampleApp.swift */,
-				4F7A44142C29645C00F294C2 /* ContentView.swift */,
+				4FA0CC332C2C73C3008B54A9 /* DependencyContainer.swift */,
 				4F7A44162C29645E00F294C2 /* Assets.xcassets */,
 				4F7A44182C29645E00F294C2 /* GitHubSample.entitlements */,
 				4F7A44192C29645E00F294C2 /* Preview Content */,
@@ -175,6 +177,7 @@
 				4FA718932C2C45F400266D61 /* Preview */,
 				4FA718952C2C45F400266D61 /* UI */,
 				4FA718972C2C45F400266D61 /* ViewModel */,
+				4FA0CC362C2C7EEA008B54A9 /* SDWebImageSwiftUI */,
 			);
 			productName = GitHubSample;
 			productReference = 4F7A440F2C29645C00F294C2 /* GitHubSample.app */;
@@ -248,6 +251,9 @@
 				Base,
 			);
 			mainGroup = 4F7A44062C29645C00F294C2;
+			packageReferences = (
+				4FA0CC352C2C7EEA008B54A9 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+			);
 			productRefGroup = 4F7A44102C29645C00F294C2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -290,7 +296,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4F7A44152C29645C00F294C2 /* ContentView.swift in Sources */,
+				4FA0CC342C2C73C3008B54A9 /* DependencyContainer.swift in Sources */,
 				4F7A44132C29645C00F294C2 /* GitHubSampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -490,6 +496,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"GitHubSample/Preview Content\"";
 				DEVELOPMENT_TEAM = 3Y7Z957SH7;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -643,7 +650,23 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		4FA0CC352C2C7EEA008B54A9 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		4FA0CC362C2C7EEA008B54A9 /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4FA0CC352C2C7EEA008B54A9 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
 		4FA7188F2C2C45F400266D61 /* API */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = API;

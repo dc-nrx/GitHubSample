@@ -2,6 +2,9 @@
 // https://docs.swift.org/swift-book
 
 import Combine
+import OSLog
+import Network
+
 import SwiftUI
 import API
 
@@ -21,43 +24,64 @@ public class PaginatorVM<API: PaginationAPI>: ObservableObject {
     @Published
     public var errorMessage: String?
 
+    @Published
+    public var connectionState: ConnectionState = .inactive
+    
     public var prefetchDistance: Int
     
     public private(set) var pageSize: Int
     public private(set) var referenceID: Item.ID
     
     private let api: API
+    private let pathMonitor: NWPathMonitor
+    private let logger = Logger(subsystem: "ViewModel", category: "PaginatorVM<\(API.self)")
+    
     private var nextPage: API.PaginationInfo.Token?
-    private var fetchTask: Task<Void, Never>?
+    private var fetchTask: Task<Void, Never>? {
+        willSet {
+            let newState: ConnectionState = (newValue == nil) ? .inactive : .active
+            connectionStateTransition(to: newState)
+        }
+    }
     
     public init(
         api: API,
         referenceID: Item.ID,
         pageSize: Int,
+        pathMonitor: NWPathMonitor = .init(),
         distanceBeforePrefetch: Int = 10
     ) {
-        print("init")
+        logger.debug("init")
         self.api = api
         self.prefetchDistance = distanceBeforePrefetch
         self.referenceID = referenceID
         self.pageSize = pageSize
+        self.pathMonitor = pathMonitor
+        
+        self.observeNetworkChanges()
     }
 }
 
 public extension PaginatorVM {
     
     func onAppear() {
+        logger.info(#function)
         if items.isEmpty {
             requestRefresh()
         }
     }
 
     func asyncRefresh() async {
+        logger.info(#function)
         requestRefresh()
         _ = await fetchTask?.result
+        logger.info("\(#function): finished")
     }
 
     func itemShown(_ item: Item) {
+        let itemId = "\(item.id)"
+        logger.info("item shown; id = \(itemId)")
+        
         if items.suffix(prefetchDistance).contains(item) {
             requestNextPageFetch()
         }
@@ -69,12 +93,16 @@ public extension PaginatorVM {
 private extension PaginatorVM {
     
     func requestNextPageFetch() {
+        logger.info(#function)
         guard fetchTask == nil else { return }
         guard let nextPage else { return }
         showLoadingNextPage = true
         
+        logger.debug("next page fetch initiated")
         fetchTask = Task { @BackgroundActor [weak self] in
             guard let self else { return }
+            logger.debug("fetch task started")
+            
             do {
                 let response = try await api.fetch(pageToken: nextPage)
                 await pageReceived(response, rewriteItems: false)
@@ -85,15 +113,20 @@ private extension PaginatorVM {
                 self.showLoadingNextPage = false
                 self.fetchTask = nil
             }
+            logger.debug("fetch task finished")
         }
     }
     
     func requestRefresh() {
+        logger.info(#function)
         guard fetchTask == nil else { return }
         showRefreshControl = true
         
+        logger.debug("refresh initiated")
         fetchTask = Task { @BackgroundActor [weak self] in
             guard let self else { return }
+            logger.debug("refresh task started")
+            
             do {
                 let response = try await api.fetch(since: referenceID, perPage: pageSize)
                 await pageReceived(response, rewriteItems: true)
@@ -103,6 +136,7 @@ private extension PaginatorVM {
             await MainActor.run {
                 self.fetchTask = nil
             }
+            logger.debug("refresh task finished")
         }
     }
     
@@ -110,16 +144,44 @@ private extension PaginatorVM {
         _ page: ([Item], API.PaginationInfo),
         rewriteItems: Bool
     ) {
-        if rewriteItems {
-            self.items = page.0
-        } else {
-            self.items.append(contentsOf: page.0)
+        let nextPageString = "\(String(describing: page.1.next))"
+        logger.info("page received. items = \(page.0), next page = \(nextPageString)")
+        
+        withAnimation {
+            if rewriteItems {
+                self.items = page.0
+            } else {
+                self.items.append(contentsOf: page.0)
+            }
         }
         nextPage = page.1.next
     }
     
     func process(error: Error) {
-        self.errorMessage = "Error occured: \(error)"
+        logger.warning("processing error: \(error)")
+        withAnimation {
+            self.errorMessage = "Error occured: \(error)"
+        }
+    }
+    
+    func connectionStateTransition(to newState: ConnectionState) {
+        let newStateString = "\(newState)"
+        logger.debug("connection state transition to `\(newStateString)`")
+        
+        withAnimation {
+            connectionState = newState
+        }
+    }
+    
+    func observeNetworkChanges() {
+        pathMonitor.pathUpdateHandler = { [weak self] path in
+            guard let self else { return }
+            if path.availableInterfaces.isEmpty {
+                connectionStateTransition(to: .noConnection)
+            } else if case .noConnection = self.connectionState {
+                connectionStateTransition(to: .inactive)
+            }
+        }
     }
 }
 

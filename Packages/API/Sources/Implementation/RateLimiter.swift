@@ -51,7 +51,7 @@ public actor RateLimiter {
      to keep the track between app launches.
      */
     public init(
-        _ config: Config,
+        _ config: Config = .init(interval: 60 * 60, limit: 60),
         persistedRecords: [Record] = .init()
     ) {
         self.config = config
