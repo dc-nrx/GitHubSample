@@ -8,7 +8,7 @@ import API
 @MainActor
 public class PaginatorVM<API: PaginationAPI>: ObservableObject {
     public typealias Item = API.Item
-        
+    
     @Published
     public var items = [Item]()
     
@@ -30,7 +30,7 @@ public class PaginatorVM<API: PaginationAPI>: ObservableObject {
     private var nextPage: API.PaginationInfo.Token?
     private var fetchTask: Task<Void, Never>?
     
-    init(
+    public init(
         api: API,
         referenceID: Item.ID,
         pageSize: Int,
