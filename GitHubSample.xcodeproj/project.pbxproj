@@ -14,6 +14,11 @@
 		4F7A44252C29645E00F294C2 /* GitHubSampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7A44242C29645E00F294C2 /* GitHubSampleTests.swift */; };
 		4F7A442F2C29645E00F294C2 /* GitHubSampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7A442E2C29645E00F294C2 /* GitHubSampleUITests.swift */; };
 		4F7A44312C29645E00F294C2 /* GitHubSampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7A44302C29645E00F294C2 /* GitHubSampleUITestsLaunchTests.swift */; };
+		4FA718902C2C45F400266D61 /* API in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA7188F2C2C45F400266D61 /* API */; };
+		4FA718922C2C45F400266D61 /* Implementation in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA718912C2C45F400266D61 /* Implementation */; };
+		4FA718942C2C45F400266D61 /* Preview in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA718932C2C45F400266D61 /* Preview */; };
+		4FA718962C2C45F400266D61 /* UI in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA718952C2C45F400266D61 /* UI */; };
+		4FA718982C2C45F400266D61 /* ViewModel in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA718972C2C45F400266D61 /* ViewModel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +60,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FA718982C2C45F400266D61 /* ViewModel in Frameworks */,
+				4FA718962C2C45F400266D61 /* UI in Frameworks */,
+				4FA718942C2C45F400266D61 /* Preview in Frameworks */,
+				4FA718922C2C45F400266D61 /* Implementation in Frameworks */,
+				4FA718902C2C45F400266D61 /* API in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +95,7 @@
 				4F7A44232C29645E00F294C2 /* GitHubSampleTests */,
 				4F7A442D2C29645E00F294C2 /* GitHubSampleUITests */,
 				4F7A44102C29645C00F294C2 /* Products */,
+				4FA7188E2C2C45F400266D61 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -135,6 +146,13 @@
 			path = GitHubSampleUITests;
 			sourceTree = "<group>";
 		};
+		4FA7188E2C2C45F400266D61 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -151,6 +169,13 @@
 			dependencies = (
 			);
 			name = GitHubSample;
+			packageProductDependencies = (
+				4FA7188F2C2C45F400266D61 /* API */,
+				4FA718912C2C45F400266D61 /* Implementation */,
+				4FA718932C2C45F400266D61 /* Preview */,
+				4FA718952C2C45F400266D61 /* UI */,
+				4FA718972C2C45F400266D61 /* ViewModel */,
+			);
 			productName = GitHubSample;
 			productReference = 4F7A440F2C29645C00F294C2 /* GitHubSample.app */;
 			productType = "com.apple.product-type.application";
@@ -617,6 +642,29 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4FA7188F2C2C45F400266D61 /* API */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = API;
+		};
+		4FA718912C2C45F400266D61 /* Implementation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Implementation;
+		};
+		4FA718932C2C45F400266D61 /* Preview */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Preview;
+		};
+		4FA718952C2C45F400266D61 /* UI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UI;
+		};
+		4FA718972C2C45F400266D61 /* ViewModel */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ViewModel;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4F7A44072C29645C00F294C2 /* Project object */;
 }

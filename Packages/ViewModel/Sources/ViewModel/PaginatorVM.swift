@@ -36,6 +36,7 @@ public class PaginatorVM<API: PaginationAPI>: ObservableObject {
         pageSize: Int,
         distanceBeforePrefetch: Int = 10
     ) {
+        print("init")
         self.api = api
         self.prefetchDistance = distanceBeforePrefetch
         self.referenceID = referenceID
@@ -50,11 +51,12 @@ public extension PaginatorVM {
             requestRefresh()
         }
     }
-    
-    func onRefresh() {
+
+    func asyncRefresh() async {
         requestRefresh()
+        _ = await fetchTask?.result
     }
-    
+
     func itemShown(_ item: Item) {
         if items.suffix(prefetchDistance).contains(item) {
             requestNextPageFetch()
@@ -71,17 +73,18 @@ private extension PaginatorVM {
         guard let nextPage else { return }
         showLoadingNextPage = true
         
-        fetchTask = Task { [weak self] in
+        fetchTask = Task { @BackgroundActor [weak self] in
             guard let self else { return }
             do {
-                let (newItems, paginationInfo) = try await api.fetch(pageToken: nextPage)
-                self.items.append(contentsOf: newItems)
-                self.nextPage = paginationInfo.next
+                let response = try await api.fetch(pageToken: nextPage)
+                await pageReceived(response, rewriteItems: false)
             } catch {
-                self.errorMessage = "Error occured: \(error)"
+                await process(error: error)
             }
-            self.fetchTask = nil
-            showLoadingNextPage = false
+            await MainActor.run {
+                self.showLoadingNextPage = false
+                self.fetchTask = nil
+            }
         }
     }
     
@@ -89,18 +92,34 @@ private extension PaginatorVM {
         guard fetchTask == nil else { return }
         showRefreshControl = true
         
-        fetchTask = Task { [weak self] in
+        fetchTask = Task { @BackgroundActor [weak self] in
             guard let self else { return }
             do {
-                let (newItems, paginationInfo) = try await api.fetch(since: referenceID, perPage: pageSize)
-                self.items = newItems
-                self.nextPage = paginationInfo.next
+                let response = try await api.fetch(since: referenceID, perPage: pageSize)
+                await pageReceived(response, rewriteItems: true)
             } catch {
-                self.errorMessage = "Error occured: \(error)"
+                await process(error: error)
             }
-            self.fetchTask = nil
-            showRefreshControl = false
+            await MainActor.run {
+                self.fetchTask = nil
+            }
         }
+    }
+    
+    func pageReceived(
+        _ page: ([Item], API.PaginationInfo),
+        rewriteItems: Bool
+    ) {
+        if rewriteItems {
+            self.items = page.0
+        } else {
+            self.items.append(contentsOf: page.0)
+        }
+        nextPage = page.1.next
+    }
+    
+    func process(error: Error) {
+        self.errorMessage = "Error occured: \(error)"
     }
 }
 
