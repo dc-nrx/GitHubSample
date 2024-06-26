@@ -12,6 +12,9 @@ let package = Package(
             name: "API",
             targets: ["API"]),
         .library(
+            name: "Preview",
+            targets: ["Preview"]),
+        .library(
             name: "Implementation",
             targets: ["Implementation"]),
     ],
@@ -23,9 +26,13 @@ let package = Package(
         .target(
             name: "Implementation",
             dependencies: ["API"]),
+        .target(
+            name: "Preview",
+            dependencies: ["API", "Implementation"],
+            resources: [.process("SampleResponses")]),
         .testTarget(
             name: "APITests",
-            dependencies: ["API", "Implementation"],
+            dependencies: ["API", "Implementation", "Preview"],
             swiftSettings: [
                 // Suppress the deprecation warning in `UrlSessionMock.init`.
                 .unsafeFlags(["-suppress-warnings"]),
