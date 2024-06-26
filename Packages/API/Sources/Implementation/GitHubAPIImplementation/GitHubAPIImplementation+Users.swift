@@ -8,7 +8,8 @@
 import Foundation
 import API
 
-extension GitHubAPIImplementation: PaginationAPI {
+extension GitHubAPIImplementation: UsersPaginator {
+    public typealias PaginationInfo = UrlPaginationInfo
     
     public func fetch(since: User.ID, perPage: Int) async throws -> ([User], PaginationInfo) {
         let url = try URL(base: baseURL, path: "users", query: [

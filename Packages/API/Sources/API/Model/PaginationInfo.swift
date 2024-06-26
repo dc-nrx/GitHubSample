@@ -7,22 +7,11 @@
 
 import Foundation
 
-public typealias PaginationInfo = GenericPaginationInfo<URL>
-
-public struct GenericPaginationInfo<T> {
-    public typealias Token = T
+public protocol PaginationInfoProtocol {
+    associatedtype Token
     
-    public var next: Token?
-    public var prev: Token?
-    public var first: Token?
-    public var last: Token?
-    
-    public init(next: Token? = nil, prev: Token? = nil, first: Token? = nil, last: Token? = nil) {
-        self.next = next
-        self.prev = prev
-        self.first = first
-        self.last = last
-    }
+    var next: Token? { get }
+    var prev: Token? { get }
+    var first: Token? { get }
+    var last: Token? { get }
 }
-
-extension GenericPaginationInfo: Equatable where T: Equatable { }
