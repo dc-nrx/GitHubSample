@@ -20,3 +20,12 @@ public protocol Paginator<Item, PaginationInfo> {
     func fetch(_ filter: Filter, perPage: Int) async throws -> ([Item], PaginationInfo)
     func fetch(pageToken: PaginationInfo.Token) async throws -> ([Item], PaginationInfo)
 }
+
+public protocol PaginationInfoProtocol {
+    associatedtype Token
+    
+    var next: Token? { get }
+    var prev: Token? { get }
+    var first: Token? { get }
+    var last: Token? { get }
+}

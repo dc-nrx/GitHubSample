@@ -13,12 +13,8 @@ import API
  - on-page has no link header - no throw
  */
 public class UserReposUrlPaginator: UrlPaginator<Repo>, Paginator {
-    
-    public struct Filter { 
-        public var username: String
-    }
-    
-    public func fetch(_ filter: Filter, perPage: Int) async throws -> ([Repo], PaginationInfo) {
+        
+    public func fetch(_ filter: UserReposFilter, perPage: Int) async throws -> ([Repo], PaginationInfo) {
         let url = try URL(base: baseURL, path: "users", query: [:
             //...
         ])
