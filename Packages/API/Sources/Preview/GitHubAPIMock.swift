@@ -28,7 +28,7 @@ public class GitHubAPIMock {
     }
 }
 
-extension GitHubAPIMock: UsersPaginator {
+extension GitHubAPIMock: PaginationAPI {
     public typealias PaginationInfo = IntPaginationInfo
     
     public func fetch(since: User.ID, perPage: Int) async throws -> ([User], IntPaginationInfo) {

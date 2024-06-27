@@ -10,6 +10,7 @@ import API
 
 public enum ApiError: Error {
     case failedToRetrievePaginationInfoHeader(HTTPURLResponse)
+    case sessionManagerIsNil
     case invalidServerResponse(URLResponse)
     case httpError(Int)
     case duplicatePaginationLink(String)

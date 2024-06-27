@@ -7,7 +7,7 @@
 
 import XCTest
 import Foundation
-@testable import Implementation
+import Implementation
 
 final class GitHubAPIImplementationTests: XCTestCase {
     

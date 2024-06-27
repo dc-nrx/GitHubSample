@@ -7,7 +7,7 @@
 
 import Foundation
 import API
-@testable import Implementation
+import Implementation
 
 public final class Samples {
     

@@ -16,6 +16,12 @@ public struct UrlPaginationInfo: PaginationInfoProtocol, Equatable {
     public var first: URL?
     public var last: URL?
     
+    public init(next: URL? = nil, prev: URL? = nil, first: URL? = nil, last: URL? = nil) {
+        self.next = next
+        self.prev = prev
+        self.first = first
+        self.last = last
+    }
 }
 public extension UrlPaginationInfo {
 

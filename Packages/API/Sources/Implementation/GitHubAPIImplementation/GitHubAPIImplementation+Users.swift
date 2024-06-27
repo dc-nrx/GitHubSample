@@ -6,31 +6,46 @@
 //
 
 import Foundation
+import OSLog
+
 import API
 
-extension GitHubAPIImplementation: UsersPaginator {
+class UrlPaginator<Item: Decodable & Identifiable> {
     public typealias PaginationInfo = UrlPaginationInfo
+
+    let baseURL: URL
     
-    public func fetch(since: User.ID, perPage: Int) async throws -> ([User], PaginationInfo) {
+    private let sessionManager: SessionManager
+    private let logger = Logger(subsystem: "Implementation", category: "UrlPaginator<\(Item.self)>")
+    
+    init(baseURL: URL, sessionManager: SessionManager) {
+        self.baseURL = baseURL
+        self.sessionManager = sessionManager
+    }
+}
+
+extension UrlPaginator: PaginationAPI {
+    
+    public func fetch(since: Item.ID, perPage: Int) async throws -> ([Item], PaginationInfo) {
+
         let url = try URL(base: baseURL, path: "users", query: [
             "since": since,
             "per_page": perPage
         ])
-        return try await fetchUsers(url: url)
+        return try await fetchPage(url: url)
     }
     
-    public func fetch(pageToken: URL) async throws -> ([User], PaginationInfo) {
-        try await fetchUsers(url: pageToken)
+    public func fetch(pageToken: URL) async throws -> ([Item], PaginationInfo) {
+        try await fetchPage(url: pageToken)
     }
 }
 
-private extension GitHubAPIImplementation {
+private extension UrlPaginator {
     
-    func fetchUsers(url: URL) async throws -> ([User], PaginationInfo) {
+    func fetchPage(url: URL) async throws -> ([Item], PaginationInfo) {
         logger.debug("requested fetchUsers with \(url)")
         
-        let request = makeRequest(.get, for: url)
-        let (data, response) = try await data(for: request)
+        let (data, response) = try await sessionManager.data(.get, from: url)
         guard let httpResponse = response as? HTTPURLResponse else {
             throw ApiError.invalidServerResponse(response)
         }
@@ -42,10 +57,11 @@ private extension GitHubAPIImplementation {
         }
         
         //TODO: ensure bg thread on parse
-        let usersList = try makeDecoder().decode([User].self, from: data)
+        let items = try JSONDecoder(keyStrategy: .convertFromSnakeCase)
+            .decode([Item].self, from: data)
         let paginationInfo = try PaginationInfo(githubLinkHeader: linkHeader)
         
         logger.debug("fetchUsers for \(url) succeeded")
-        return (usersList, paginationInfo)
+        return (items, paginationInfo)
     }
 }

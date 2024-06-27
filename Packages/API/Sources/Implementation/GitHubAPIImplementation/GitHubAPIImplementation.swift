@@ -9,37 +9,50 @@ import Foundation
 import API
 import OSLog
 
-public class GitHubAPIImplementation {    
-    static let authKey = "Authorization"
+public class GitHubSessionManager {
+    public static let authKey = "Authorization"
     
     public var authToken: String?    
     
-    let baseURL: URL
     let logger = Logger(subsystem: "API", category: "GitHubAPIImplementation")
     
-    /// `session` is private to ensure proper tracking of each request via `rateLimiter`.
     private let session: URLSession
-    
     private let rateLimiter: RateLimiter
     
     public init(
-        baseURL: URL = URL(string: "https://api.github.com")!,
         session: URLSession = .init(configuration: .default),
         rateLimiter: RateLimiter = .init(),
         authToken: String? = nil
     ) {
         self.session = session
-        self.baseURL = baseURL
         self.authToken = authToken
         self.rateLimiter = rateLimiter
     }
 }
 
-extension GitHubAPIImplementation {
+extension GitHubSessionManager: SessionManager {
        
-    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+    public func data(_ method: HttpMethod, from url: URL) async throws -> (Data, URLResponse) {
         try await rateLimiter.record(ignoreLimitExceededCheck: ignoreRateLimit)
+        let request = makeRequest(method, for: url)
         return try await session.data(for: request)
+    }
+}
+
+private extension GitHubSessionManager {
+    
+    var commonHeaders: [String: String] {
+        var result = [
+            "accept": "application/vnd.github+json"
+        ]
+        if let authToken {
+            result[GitHubSessionManager.authKey] = "Bearer \(authToken)"
+        }
+        return result
+    }
+
+    var ignoreRateLimit: Bool {
+        authToken != nil
     }
     
     func makeRequest(_ method: HttpMethod, for url: URL) -> URLRequest {
@@ -47,26 +60,5 @@ extension GitHubAPIImplementation {
         result.allHTTPHeaderFields = commonHeaders
         result.httpMethod = method.rawValue
         return result
-    }
-    
-    func makeDecoder() -> JSONDecoder {
-        .init(keyStrategy: .convertFromSnakeCase)
-    }
-}
-
-private extension GitHubAPIImplementation {
-    
-    var commonHeaders: [String: String] {
-        var result = [
-            "accept": "application/vnd.github+json"
-        ]
-        if let authToken {
-            result[GitHubAPIImplementation.authKey] = "Bearer \(authToken)"
-        }
-        return result
-    }
-
-    var ignoreRateLimit: Bool {
-        authToken != nil
     }
 }

@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import Implementation
+import Implementation
 
 final class OnDiskPersistanceProviderTests: XCTestCase {
 

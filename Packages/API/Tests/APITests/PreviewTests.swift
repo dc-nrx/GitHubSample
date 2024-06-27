@@ -7,7 +7,7 @@
 
 import XCTest
 import Preview
-@testable import API
+import API
 
 final class PreviewTests: XCTestCase {
     

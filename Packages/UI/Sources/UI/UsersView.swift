@@ -45,16 +45,16 @@ public struct UsersView<Api: PaginationAPI>: View where Api.Item == User {
     @ViewBuilder
     func cell(_ user: User) -> some View {
         HStack {
-//            WebImage(url: user.avatarUrl) { image in
-//                image
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fit)
-//                    .frame(width: imageSide, height: imageSide)
-//                    .shadow(radius: 2)
-//            } placeholder: {
-//                Image(systemName: "photo")
-//            }
-//            .background(.yellow)
+            WebImage(url: user.avatarUrl) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: imageSide, height: imageSide)
+                    .shadow(radius: 2)
+            } placeholder: {
+                Image(systemName: "photo")
+            }
+            .background(.yellow)
             
             VStack(alignment: .leading) {
                 Text("id: \(user.id)")

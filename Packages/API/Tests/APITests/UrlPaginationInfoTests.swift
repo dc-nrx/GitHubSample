@@ -9,7 +9,7 @@ import XCTest
 
 import API
 import Preview
-@testable import Implementation
+import Implementation
 
 
 final class UrlUrlPaginationInfoTests: XCTestCase {

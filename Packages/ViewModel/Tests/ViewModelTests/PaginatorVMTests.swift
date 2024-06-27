@@ -3,7 +3,7 @@ import Combine
 
 import Preview
 import API
-@testable import ViewModel
+import ViewModel
 
 final class PaginatorVMTests: XCTestCase {
     typealias Sut = PaginatorVM<GitHubAPIMock>
