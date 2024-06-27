@@ -15,7 +15,7 @@ final class PaginatorVMTests: XCTestCase {
     override func setUp() async throws {
         cancellables = .init()
         mockApi = .init()
-        sut = await .init(api: mockApi, referenceID: 0, pageSize: 30)
+        sut = await .init(api: mockApi, filter: 0, pageSize: 30)
     }
     
     override func tearDown() async throws {

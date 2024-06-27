@@ -9,7 +9,7 @@ import SwiftUI
 import API
 
 @MainActor
-public class PaginatorVM<API: PaginationAPI>: ObservableObject {
+public class PaginatorVM<API: Paginator>: ObservableObject {
     public typealias Item = API.Item
     
     @Published
@@ -30,7 +30,7 @@ public class PaginatorVM<API: PaginationAPI>: ObservableObject {
     public var prefetchDistance: Int
     
     public private(set) var pageSize: Int
-    public private(set) var referenceID: Item.ID
+    public private(set) var filter: API.Filter
     
     private let api: API
     private let pathMonitor: NWPathMonitor
@@ -46,7 +46,7 @@ public class PaginatorVM<API: PaginationAPI>: ObservableObject {
     
     public init(
         api: API,
-        referenceID: Item.ID,
+        filter: API.Filter,
         pageSize: Int,
         pathMonitor: NWPathMonitor = .init(),
         distanceBeforePrefetch: Int = 10
@@ -54,7 +54,7 @@ public class PaginatorVM<API: PaginationAPI>: ObservableObject {
         logger.debug("init")
         self.api = api
         self.prefetchDistance = distanceBeforePrefetch
-        self.referenceID = referenceID
+        self.filter = filter
         self.pageSize = pageSize
         self.pathMonitor = pathMonitor
         
@@ -128,7 +128,7 @@ private extension PaginatorVM {
             logger.debug("refresh task started")
             
             do {
-                let response = try await api.fetch(since: referenceID, perPage: pageSize)
+                let response = try await api.fetch(filter, perPage: pageSize)
                 await pageReceived(response, rewriteItems: true)
             } catch {
                 await process(error: error)
