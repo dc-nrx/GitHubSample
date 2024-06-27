@@ -24,7 +24,7 @@ public class UrlPaginator<Item: Decodable & Identifiable> {
     }
 }
 
-extension UrlPaginator: PaginationAPI {
+extension UrlPaginator: Paginator {
     
     public func fetch(since: Item.ID, perPage: Int) async throws -> ([Item], PaginationInfo) {
 
@@ -43,7 +43,7 @@ extension UrlPaginator: PaginationAPI {
 private extension UrlPaginator {
     
     func fetchPage(url: URL) async throws -> ([Item], PaginationInfo) {
-        logger.debug("requested fetchUsers with \(url)")
+        logger.debug("requested fetchPage with \(url)")
         
         let (data, response) = try await sessionManager.data(.get, from: url)
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -61,7 +61,7 @@ private extension UrlPaginator {
             .decode([Item].self, from: data)
         let paginationInfo = try PaginationInfo(githubLinkHeader: linkHeader)
         
-        logger.debug("fetchUsers for \(url) succeeded")
+        logger.debug("fetchPage for \(url) succeeded")
         return (items, paginationInfo)
     }
 }
