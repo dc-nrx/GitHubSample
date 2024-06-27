@@ -11,7 +11,7 @@ import ViewModel
 import Preview
 import SDWebImageSwiftUI
 
-public struct UsersView<Api: PaginationAPI>: View where Api.Item == User {
+public struct UsersView<Api: Paginator>: View where Api.Item == User, Api.Filter == Int {
     
     @ObservedObject 
     var vm: PaginatorVM<Api>
@@ -71,7 +71,7 @@ public struct UsersView<Api: PaginationAPI>: View where Api.Item == User {
 #Preview {
     let vm = PaginatorVM(
         api: GitHubAPIMock(nextDelay: 2),
-        referenceID: 0,
+        filter: 0,
         pageSize: 30
     )
     

@@ -13,6 +13,7 @@ import Foundation
 public protocol SessionManager {
     
     func data(_ method: HttpMethod, from url: URL) async throws -> (Data, URLResponse)
+    var authToken: String? { get set }
 }
 
 public enum HttpMethod: String {

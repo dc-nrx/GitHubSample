@@ -20,6 +20,10 @@
 		4FA718942C2C45F400266D61 /* Preview in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA718932C2C45F400266D61 /* Preview */; };
 		4FA718962C2C45F400266D61 /* UI in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA718952C2C45F400266D61 /* UI */; };
 		4FA718982C2C45F400266D61 /* ViewModel in Frameworks */ = {isa = PBXBuildFile; productRef = 4FA718972C2C45F400266D61 /* ViewModel */; };
+		4FEE5EC92C2D555E00383CC5 /* Env.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEE5EC82C2D555E00383CC5 /* Env.swift */; };
+		4FEE5ECB2C2D55DE00383CC5 /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4FEE5ECA2C2D55DE00383CC5 /* Secrets.xcconfig */; };
+		4FEE5ECE2C2D578200383CC5 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4FEE5ECD2C2D578200383CC5 /* Debug.xcconfig */; };
+		4FEE5ED02C2D579B00383CC5 /* Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4FEE5ECF2C2D579B00383CC5 /* Release.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +58,11 @@
 		4F7A443E2C2B3CB400F294C2 /* ViewModel */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ViewModel; path = Packages/ViewModel; sourceTree = "<group>"; };
 		4FA0CC332C2C73C3008B54A9 /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
 		4FD8B9582C2C344300E5A6D9 /* UI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = UI; path = Packages/UI; sourceTree = "<group>"; };
+		4FEE5EC82C2D555E00383CC5 /* Env.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Env.swift; sourceTree = "<group>"; };
+		4FEE5ECA2C2D55DE00383CC5 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		4FEE5ECD2C2D578200383CC5 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		4FEE5ECF2C2D579B00383CC5 /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		4FEE5ED22C2D5A1A00383CC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,10 +123,13 @@
 		4F7A44112C29645C00F294C2 /* GitHubSample */ = {
 			isa = PBXGroup;
 			children = (
+				4FEE5ED22C2D5A1A00383CC5 /* Info.plist */,
 				4F7A44122C29645C00F294C2 /* GitHubSampleApp.swift */,
 				4FA0CC332C2C73C3008B54A9 /* DependencyContainer.swift */,
+				4FEE5EC82C2D555E00383CC5 /* Env.swift */,
 				4F7A44162C29645E00F294C2 /* Assets.xcassets */,
 				4F7A44182C29645E00F294C2 /* GitHubSample.entitlements */,
+				4FEE5ECC2C2D564600383CC5 /* Config */,
 				4F7A44192C29645E00F294C2 /* Preview Content */,
 			);
 			path = GitHubSample;
@@ -153,6 +165,16 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4FEE5ECC2C2D564600383CC5 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				4FEE5ECD2C2D578200383CC5 /* Debug.xcconfig */,
+				4FEE5ECF2C2D579B00383CC5 /* Release.xcconfig */,
+				4FEE5ECA2C2D55DE00383CC5 /* Secrets.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -270,8 +292,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FEE5ECE2C2D578200383CC5 /* Debug.xcconfig in Resources */,
+				4FEE5ECB2C2D55DE00383CC5 /* Secrets.xcconfig in Resources */,
 				4F7A441B2C29645E00F294C2 /* Preview Assets.xcassets in Resources */,
 				4F7A44172C29645E00F294C2 /* Assets.xcassets in Resources */,
+				4FEE5ED02C2D579B00383CC5 /* Release.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,6 +321,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FEE5EC92C2D555E00383CC5 /* Env.swift in Sources */,
 				4FA0CC342C2C73C3008B54A9 /* DependencyContainer.swift in Sources */,
 				4F7A44132C29645C00F294C2 /* GitHubSampleApp.swift in Sources */,
 			);
@@ -336,6 +362,7 @@
 /* Begin XCBuildConfiguration section */
 		4F7A44322C29645E00F294C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4FEE5ECD2C2D578200383CC5 /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -397,6 +424,7 @@
 		};
 		4F7A44332C29645E00F294C2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4FEE5ECF2C2D579B00383CC5 /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -450,6 +478,7 @@
 		};
 		4F7A44352C29645E00F294C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4FEE5ECD2C2D578200383CC5 /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -460,6 +489,7 @@
 				DEVELOPMENT_TEAM = 3Y7Z957SH7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GitHubSample/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -470,7 +500,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.5;
@@ -487,6 +517,7 @@
 		};
 		4F7A44362C29645E00F294C2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4FEE5ECF2C2D579B00383CC5 /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -498,6 +529,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GitHubSample/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -508,7 +540,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.5;
@@ -525,11 +557,13 @@
 		};
 		4F7A44382C29645E00F294C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4FEE5ECD2C2D578200383CC5 /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3Y7Z957SH7;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MACOSX_DEPLOYMENT_TARGET = 14.5;
@@ -547,11 +581,13 @@
 		};
 		4F7A44392C29645E00F294C2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4FEE5ECF2C2D579B00383CC5 /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3Y7Z957SH7;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MACOSX_DEPLOYMENT_TARGET = 14.5;
@@ -569,10 +605,12 @@
 		};
 		4F7A443B2C29645E00F294C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4FEE5ECD2C2D578200383CC5 /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3Y7Z957SH7;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MACOSX_DEPLOYMENT_TARGET = 14.5;
@@ -590,10 +628,12 @@
 		};
 		4F7A443C2C29645E00F294C2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4FEE5ECF2C2D579B00383CC5 /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3Y7Z957SH7;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				MACOSX_DEPLOYMENT_TARGET = 14.5;

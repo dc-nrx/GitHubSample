@@ -15,7 +15,7 @@ public class GitHubAPIImplementation: GitHubAPI {
     public var users: UsersUrlPaginator
     public var repos: UserReposUrlPaginator
     
-    init(
+    public init(
         users: UsersUrlPaginator,
         repos: UserReposUrlPaginator
     ) {

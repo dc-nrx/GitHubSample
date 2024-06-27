@@ -21,7 +21,12 @@ public final class DependencyContainer: ObservableObject {
     private let logger = Logger(subsystem: "GitHubSample", category: "DependencyContainer")
     
     @Published @MainActor
-    public var rootVM: PaginatorVM<API>?
+    public var rootVM: PaginatorVM<API.Users>?
+    
+    /**
+     - Warning: Intended to use in unit tests only.
+     */
+    var sessionManager: SessionManager!
     
     private var persistanceProvider: PersistanceProvider?
     private var rateLimiter: RateLimiter!
@@ -36,10 +41,14 @@ public final class DependencyContainer: ObservableObject {
             }
             let persistedRecords: [RateLimiter.Record]? = try? await persistanceProvider?.readValue(for: rateLimiterKey)
             rateLimiter = RateLimiter(rateLimiterConfig, persistedRecords: persistedRecords ?? [])
-            api = GitHubAPIImplementation(rateLimiter: rateLimiter)
+            sessionManager = GitHubSessionManager(rateLimiter: self.rateLimiter, authToken: Env.shared.githubAuthToken)
+            
+            let users = UsersUrlPaginator(sessionManager: sessionManager)
+            let userRepos = UserReposUrlPaginator(sessionManager: sessionManager)
+            api = GitHubAPIImplementation(users: users, repos: userRepos)
             
             await MainActor.run {
-                rootVM = .init(api: api, referenceID: 0, pageSize: 30)
+                rootVM = .init(api: api.users, filter: 0, pageSize: 30)
             }
             logger.debug("Init finished")
         }

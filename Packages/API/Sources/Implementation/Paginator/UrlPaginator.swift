@@ -18,7 +18,10 @@ public class UrlPaginator<Item: Decodable & Identifiable> {
     private let sessionManager: SessionManager
     private let logger = Logger(subsystem: "Implementation", category: "UrlPaginator<\(Item.self)>")
     
-    public init(baseURL: URL, sessionManager: SessionManager) {
+    public init(
+        baseURL: URL = URL(string: "https://api.github.com")!,
+        sessionManager: SessionManager
+    ) {
         self.baseURL = baseURL
         self.sessionManager = sessionManager
     }
