@@ -7,22 +7,27 @@
 
 import XCTest
 import Foundation
+
+import API
 import Implementation
 
 final class GitHubAPIImplementationTests: XCTestCase {
     
-    var sut: GitHubAPIImplementation!
+    var sut: UrlPaginator<User>!
+    var sessionManager: GitHubSessionManager!
     
     override func setUpWithError() throws {
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
         let mockSession = URLSession.init(configuration: configuration)
         
-        sut = GitHubAPIImplementation(baseURL: URL(string: "https://sample")!, session: mockSession)
+        sessionManager = GitHubSessionManager(session: mockSession)
+        sut = .init(baseURL: URL(string: "https://sample")!, sessionManager: sessionManager)
     }
 
     override func tearDownWithError() throws {
         sut = nil
+        sessionManager = nil
         updateRequestHandler(to: nil)
         updateRequestSpy(to: nil)
     }
@@ -30,11 +35,11 @@ final class GitHubAPIImplementationTests: XCTestCase {
     // TODO: Add requestSpy tests to check `since` and `per_page` params are passed correctly.
     func testAuthToken_isCorrect() async {
         let token = "test token"
-        sut.authToken = token
+        sessionManager.authToken = token
         updateRequestHandler(to: .statusCode(200, nil))
         updateRequestSpy { [token] request in
-            guard let authValue = request.value(forHTTPHeaderField: GitHubAPIImplementation.authKey) else {
-                XCTFail("\(GitHubAPIImplementation.authKey) header is missing from \(request.allHTTPHeaderFields)")
+            guard let authValue = request.value(forHTTPHeaderField: GitHubSessionManager.authKey) else {
+                XCTFail("\(GitHubSessionManager.authKey) header is missing from \(request.allHTTPHeaderFields)")
                 return
             }
             XCTAssertEqual("Bearer \(token)", authValue)

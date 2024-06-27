@@ -10,7 +10,7 @@ import OSLog
 
 import API
 
-class UrlPaginator<Item: Decodable & Identifiable> {
+public class UrlPaginator<Item: Decodable & Identifiable> {
     public typealias PaginationInfo = UrlPaginationInfo
 
     let baseURL: URL
@@ -18,7 +18,7 @@ class UrlPaginator<Item: Decodable & Identifiable> {
     private let sessionManager: SessionManager
     private let logger = Logger(subsystem: "Implementation", category: "UrlPaginator<\(Item.self)>")
     
-    init(baseURL: URL, sessionManager: SessionManager) {
+    public init(baseURL: URL, sessionManager: SessionManager) {
         self.baseURL = baseURL
         self.sessionManager = sessionManager
     }

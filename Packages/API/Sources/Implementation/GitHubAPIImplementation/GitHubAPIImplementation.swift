@@ -9,6 +9,21 @@ import Foundation
 import API
 import OSLog
 
+public class GitHubAPIImplementation: GitHubAPI {
+    public typealias PaginationInfo = UrlPaginationInfo
+        
+    public var users: UrlPaginator<User>
+    public var repos: UrlPaginator<Repo>
+    
+    init(
+        users: UrlPaginator<User>,
+        repos: UrlPaginator<Repo>
+    ) {
+        self.users = users
+        self.repos = repos
+    }
+}
+
 public class GitHubSessionManager {
     public static let authKey = "Authorization"
     
