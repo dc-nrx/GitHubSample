@@ -10,6 +10,7 @@ import Foundation
 
 import API
 import Implementation
+import Preview
 
 final class GitHubAPIImplementationTests: XCTestCase {
     
@@ -73,16 +74,11 @@ final class GitHubAPIImplementationTests: XCTestCase {
         await linkHeaderTest("lINK")
     }
     
-    func testPaginationInfoHeaderMissing_throwsCorrespondingError() async throws {
-        updateRequestHandler(to: .statusCode(200, nil))
-        do {
-            try await sut.fetch(0, perPage: 10)
-            XCTFail("Expected an error")
-        } catch ApiError.failedToRetrievePaginationInfoHeader(_) {
-            // expected behaviour
-        } catch {
-            XCTFail("Wrong error thrown \(error)")
-        }
+    func testPaginationInfoHeaderMissing_returnsEmptyPaginationInfo() async throws {
+        updateRequestHandler(to: .statusCode(200, Samples.usersResponseData))
+        let (_, info) = try await sut.fetch(0, perPage: 10)
+        let emptyInfo = UrlPaginationInfo(next: nil, prev: nil, first: nil, last: nil)
+        XCTAssertEqual(info, emptyInfo)
     }
     
     func testRateLimit_throwsCorrectError_onExceed() {

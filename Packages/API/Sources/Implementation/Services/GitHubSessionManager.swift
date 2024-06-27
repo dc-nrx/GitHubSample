@@ -13,11 +13,11 @@ public class GitHubAPIImplementation: GitHubAPI {
     public typealias PaginationInfo = UrlPaginationInfo
         
     public var users: UsersUrlPaginator
-    public var repos: ReposUrlPaginator
+    public var repos: UserReposUrlPaginator
     
     init(
         users: UsersUrlPaginator,
-        repos: ReposUrlPaginator
+        repos: UserReposUrlPaginator
     ) {
         self.users = users
         self.repos = repos

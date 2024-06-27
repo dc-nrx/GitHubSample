@@ -43,14 +43,17 @@ extension UrlPaginator {
         guard (200..<400).contains(httpResponse.statusCode) else {
             throw ApiError.httpError(httpResponse.statusCode)
         }
-        guard let linkHeader = httpResponse.value(forHTTPHeaderField: "link") else {
-            throw ApiError.failedToRetrievePaginationInfoHeader(httpResponse)
-        }
         
         //TODO: ensure bg thread on parse
         let items = try JSONDecoder(keyStrategy: .convertFromSnakeCase)
             .decode([Item].self, from: data)
-        let paginationInfo = try PaginationInfo(githubLinkHeader: linkHeader)
+        
+        var paginationInfo: PaginationInfo
+        if let linkHeader = httpResponse.value(forHTTPHeaderField: "link") {
+            paginationInfo = try PaginationInfo(githubLinkHeader: linkHeader)
+        } else {
+            paginationInfo = .init()
+        }
         
         logger.debug("fetchPage for \(url) succeeded")
         return (items, paginationInfo)
