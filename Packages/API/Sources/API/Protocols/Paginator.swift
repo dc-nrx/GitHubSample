@@ -15,7 +15,8 @@ import Foundation
 public protocol Paginator<Item, PaginationInfo> {
     associatedtype Item: Identifiable
     associatedtype PaginationInfo: PaginationInfoProtocol
-
-    func fetch(since: Item.ID, perPage: Int) async throws -> ([Item], PaginationInfo)
+    associatedtype Filter
+    
+    func fetch(_ filter: Filter, perPage: Int) async throws -> ([Item], PaginationInfo)
     func fetch(pageToken: PaginationInfo.Token) async throws -> ([Item], PaginationInfo)
 }

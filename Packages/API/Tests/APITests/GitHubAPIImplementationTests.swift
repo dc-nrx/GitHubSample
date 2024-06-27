@@ -13,7 +13,7 @@ import Implementation
 
 final class GitHubAPIImplementationTests: XCTestCase {
     
-    var sut: UrlPaginator<User>!
+    var sut: UsersUrlPaginator!
     var sessionManager: GitHubSessionManager!
     
     override func setUpWithError() throws {
@@ -45,7 +45,7 @@ final class GitHubAPIImplementationTests: XCTestCase {
             XCTAssertEqual("Bearer \(token)", authValue)
         }
         do {
-            try await sut.fetch(since: 0, perPage: 10)
+            try await sut.fetch(0, perPage: 10)
         } catch {
             // Of no importance here
         }
@@ -58,7 +58,7 @@ final class GitHubAPIImplementationTests: XCTestCase {
             let customResponse = HTTPURLResponse(url: URL(string: "http://sample")!, statusCode: 200, httpVersion: nil, headerFields: [linkHeaderKey: "zzzz"])!
             updateRequestHandler(to: .stub(customResponse, "Test".data(using: .utf8)))
             do {
-                try await sut.fetch(since: 0, perPage: 10)
+                try await sut.fetch(0, perPage: 10)
                 XCTFail("Expected error")
             } catch ApiError.failedToRetrievePaginationInfoHeader(_) {
                 XCTFail("Pagination info header stored under `\(linkHeaderKey)` header key should have been found in \(customResponse.allHeaderFields)")
@@ -76,7 +76,7 @@ final class GitHubAPIImplementationTests: XCTestCase {
     func testPaginationInfoHeaderMissing_throwsCorrespondingError() async throws {
         updateRequestHandler(to: .statusCode(200, nil))
         do {
-            try await sut.fetch(since: 0, perPage: 10)
+            try await sut.fetch(0, perPage: 10)
             XCTFail("Expected an error")
         } catch ApiError.failedToRetrievePaginationInfoHeader(_) {
             // expected behaviour

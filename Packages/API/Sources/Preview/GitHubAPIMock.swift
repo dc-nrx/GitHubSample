@@ -31,8 +31,9 @@ public class GitHubAPIMock {
 extension GitHubAPIMock: Paginator {
     public typealias PaginationInfo = IntPaginationInfo
     
-    public func fetch(since: User.ID, perPage: Int) async throws -> ([User], IntPaginationInfo) {
-        let users = usersPool.dropFirst(since).prefix(perPage)
+    public func fetch(_ userId: User.ID, perPage: Int) async throws -> ([User], IntPaginationInfo) {
+        let users = usersPool.drop { $0.id < userId }
+            .prefix(perPage)
         self.perPage = perPage
         let next = (users.last?.id != usersPool.last?.id) ? 1 : nil
         

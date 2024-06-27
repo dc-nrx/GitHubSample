@@ -24,23 +24,14 @@ public class UrlPaginator<Item: Decodable & Identifiable> {
     }
 }
 
-extension UrlPaginator: Paginator {
-    
-    public func fetch(since: Item.ID, perPage: Int) async throws -> ([Item], PaginationInfo) {
-
-        let url = try URL(base: baseURL, path: "users", query: [
-            "since": since,
-            "per_page": perPage
-        ])
-        return try await fetchPage(url: url)
-    }
-    
-    public func fetch(pageToken: URL) async throws -> ([Item], PaginationInfo) {
+public extension UrlPaginator {
+        
+    func fetch(pageToken: URL) async throws -> ([Item], PaginationInfo) {
         try await fetchPage(url: pageToken)
     }
 }
 
-private extension UrlPaginator {
+extension UrlPaginator {
     
     func fetchPage(url: URL) async throws -> ([Item], PaginationInfo) {
         logger.debug("requested fetchPage with \(url)")

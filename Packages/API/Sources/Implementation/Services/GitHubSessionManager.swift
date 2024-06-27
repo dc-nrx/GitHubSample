@@ -12,12 +12,12 @@ import OSLog
 public class GitHubAPIImplementation: GitHubAPI {
     public typealias PaginationInfo = UrlPaginationInfo
         
-    public var users: UrlPaginator<User>
-    public var repos: UrlPaginator<Repo>
+    public var users: UsersUrlPaginator
+    public var repos: ReposUrlPaginator
     
     init(
-        users: UrlPaginator<User>,
-        repos: UrlPaginator<Repo>
+        users: UsersUrlPaginator,
+        repos: ReposUrlPaginator
     ) {
         self.users = users
         self.repos = repos
