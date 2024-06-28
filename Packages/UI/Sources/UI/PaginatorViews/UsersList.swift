@@ -21,7 +21,12 @@ public struct UsersList<API: GitHubAPI>: View {
     
     public var body: some View {
         PaginatorList(vm) { user in
-            UserCell(user)
+            NavigationLink(value: user) {
+                UserCell(user)
+            }
+        }
+        .navigationDestination(for: User.self) { user in
+            
         }
     }
 }
