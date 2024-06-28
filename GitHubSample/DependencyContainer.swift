@@ -71,8 +71,14 @@ public final class DependencyContainer: ObservableObject {
 private extension DependencyContainer {
     
     @MainActor
-    func makeUsersVM() -> PaginatorVM<API.Users> {
-        .init(api: api.users, filter: 0, pageSize: 30)
+    func makeUsersVM() -> UsersListVM<API.Users, API.Repos> {
+        let result = UsersListVM<API.Users, API.Repos>(api.users, filter: 0, pageSize: 30)
+        result.userDetailsFactory = makeUserDetailsVM
+        return result
+    }
+    
+    func makeUserDetailsVM(_ user: User) -> UserDetailsVM<API.Repos> {
+        .init(user, reposPaginator: api.repos)
     }
 }
 

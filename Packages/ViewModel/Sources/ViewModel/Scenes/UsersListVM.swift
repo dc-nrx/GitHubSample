@@ -9,15 +9,24 @@ import Foundation
 import API
 
 
-//public class UserDetailsVM<ReposPaginator: Paginator>: ObservableObject {
-//    
-//}
+public class UserDetailsVM<P: UserReposPaginator>: ObservableObject {
+    
+    public let user: User
+    public let reposPaginator: P
+    
+    public init(_ user: User, reposPaginator: P) {
+        self.user = user
+        self.reposPaginator = reposPaginator
+    }
+}
 
-public class UsersListVM<UsersPaginator: Paginator, ReposPaginator: Paginator>:
-    PaginatorVM<UsersPaginator> where UsersPaginator.Item == User, ReposPaginator.Item == ReposPaginator {
+public class UsersListVM<UsersP: UsersPaginator, ReposP: UserReposPaginator>: PaginatorVM<UsersP> {
     
-//    typealias UserDetailsVMFactory<P: Paginator> = (User) -> UserDetailsVM<P>
+    public typealias UserDetailsVMFactory = (User) -> UserDetailsVM<ReposP>
     
+    // TODO: make proper init
+    public var userDetailsFactory: UserDetailsVMFactory!
+
 //    public var makeUserDetailsVM
 //
 //    public init(
