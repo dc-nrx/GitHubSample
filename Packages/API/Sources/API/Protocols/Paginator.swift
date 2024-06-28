@@ -12,14 +12,17 @@ import Foundation
  to both PaginationAPI<Item, ...> and PaginationAPI<Repo, ...>.
  There are workarounds though, and the most promising one seems to be using a macro.
  */
-public protocol Paginator<Item, PaginationInfo> {
+public protocol Paginator<Item, Filter> {
     associatedtype Item: Identifiable
-    associatedtype PaginationInfo: PaginationInfoProtocol
     associatedtype Filter
+    associatedtype PaginationInfo: PaginationInfoProtocol
     
     func fetch(_ filter: Filter, perPage: Int) async throws -> ([Item], PaginationInfo)
     func fetch(pageToken: PaginationInfo.Token) async throws -> ([Item], PaginationInfo)
 }
+
+public typealias UserReposPaginator = Paginator<Repo, UserReposFilter>
+public typealias UsersPaginator = Paginator<User, Int>
 
 public protocol PaginationInfoProtocol {
     associatedtype Token

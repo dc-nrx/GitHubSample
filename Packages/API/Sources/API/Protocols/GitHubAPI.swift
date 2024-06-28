@@ -6,13 +6,9 @@ import Foundation
 public protocol GitHubAPI<PaginationInfo>: AnyObject {
     associatedtype PaginationInfo: PaginationInfoProtocol
     
-    associatedtype Users: Paginator where Users.Item == User,
-                                          Users.PaginationInfo == PaginationInfo,
-                                          Users.Filter == Int
+    associatedtype Users: UsersPaginator where Users.PaginationInfo == PaginationInfo
     var users: Users { get }
     
-    associatedtype Repos: Paginator where Repos.Item == Repo,
-                                          Repos.PaginationInfo == PaginationInfo,
-                                          Repos.Filter == UserReposFilter
+    associatedtype Repos: UserReposPaginator where Repos.PaginationInfo == PaginationInfo
     var repos: Repos { get }
 }

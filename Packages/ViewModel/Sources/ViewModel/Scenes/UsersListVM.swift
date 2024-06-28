@@ -8,10 +8,17 @@
 import Foundation
 import API
 
-public class UsersListVM<UsersPaginator: Paginator, ReposPaginator: Paginator>: 
+
+//public class UserDetailsVM<ReposPaginator: Paginator>: ObservableObject {
+//    
+//}
+
+public class UsersListVM<UsersPaginator: Paginator, ReposPaginator: Paginator>:
     PaginatorVM<UsersPaginator> where UsersPaginator.Item == User, ReposPaginator.Item == ReposPaginator {
     
-    public var reposPaginator: ReposPaginator?
+//    typealias UserDetailsVMFactory<P: Paginator> = (User) -> UserDetailsVM<P>
+    
+//    public var makeUserDetailsVM
 //
 //    public init(
 //        paginator: P,
