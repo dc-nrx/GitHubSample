@@ -10,18 +10,18 @@ import API
 import SDWebImageSwiftUI
 import Preview
 
-struct UserCell: View {
+public struct UserCell: View {
     
-    var user: User
+    public var user: User
 
-    var imageSide: CGFloat
+    public var imageSide: CGFloat
 
-    init(_ user: User, imageSide: CGFloat = 64) {
+    public init(_ user: User, imageSide: CGFloat = 64) {
         self.user = user
         self.imageSide = imageSide
     }
     
-    var body: some View {
+    public var body: some View {
         HStack {
             WebImage(url: user.avatarUrl) { image in
                 image

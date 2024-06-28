@@ -33,21 +33,33 @@ struct RepoCell: View {
                     .foregroundStyle(.secondary)
                     .lineLimit(descrLineLimit)
             }
-            HStack {
-                // `Label(text:systemImage:)` has too much spacing for this occasion.
-                Image(systemName: "star.fill")
-                Text("\(repo.stargazersCount)")
-                
-                Image(systemName: "arrow.triangle.branch")
-                Text("\(repo.forksCount)")
-                
+            HStack(spacing: 12) {
+                label(repo.stargazersCount, "star.fill")
+                label(repo.forksCount, "arrow.triangle.branch")
                 Spacer()
                 if let language = repo.language {
                     Text(language)
+                } else {
+                    Text("Unknown")
                         .italic()
+                        .foregroundStyle(.secondary)
                 }
             }
+            .lineLimit(1)
             .padding(.vertical, 4)
+        }
+    }
+
+    /// `Label(text:systemImage:)` has too much spacing for this occasion.
+    @ViewBuilder
+    func label(
+        _ value: Int,
+        _ systemImage: String,
+        _ spacing: CGFloat = 4
+    ) -> some View {
+        HStack(spacing: spacing) {
+            Image(systemName: systemImage)
+            Text("\(value)")
         }
     }
 }

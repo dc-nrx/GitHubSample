@@ -25,7 +25,10 @@ struct GitHubSampleApp: App {
         WindowGroup {
             NavigationStack {
                 if let rootVM = dependencyContainer.rootVM {
-                    UsersView(vm: rootVM)
+                    PaginatorList(rootVM) {
+                        UserCell($0)
+                    }
+                    .navigationTitle("Users")
                 } else {
                     Text("Initialization...")
                 }
