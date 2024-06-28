@@ -14,9 +14,10 @@ import SDWebImageSwiftUI
 public struct UsersView<Api: Paginator>: View where Api.Item == User, Api.Filter == Int {
     
     @ObservedObject 
-    var vm: PaginatorVM<Api>
+    public var vm: PaginatorVM<Api>
     
-    @State var imageSide: CGFloat = 64
+    @State 
+    public var imageSide: CGFloat = 64
     
     public init(vm: PaginatorVM<Api>) {
         self.vm = vm
@@ -48,13 +49,15 @@ public struct UsersView<Api: Paginator>: View where Api.Item == User, Api.Filter
             WebImage(url: user.avatarUrl) { image in
                 image
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: imageSide, height: imageSide)
+                    .clipped(antialiased: true)
                     .shadow(radius: 2)
             } placeholder: {
-                Image(systemName: "photo")
+                Rectangle()
+                    .frame(width: imageSide, height: imageSide)
+                    .foregroundStyle(.gray)
             }
-            .background(.yellow)
             
             VStack(alignment: .leading) {
                 Text("id: \(user.id)")
