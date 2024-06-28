@@ -13,19 +13,19 @@ public struct IntPaginationInfo: PaginationInfoProtocol {
 }
 
 public typealias UsersPaginatorMock = PaginatorMock<User, Int>
-public typealias ReposPaginatorMock = PaginatorMock<User, Int>
+public typealias ReposPaginatorMock = PaginatorMock<Repo, UserReposFilter>
 
 public class PaginatorMock<Item: Identifiable, Filter>: Paginator {
     public typealias PaginationInfo = IntPaginationInfo
 
-    public var itemsPool: [Item]
+    public var itemsPool: any RandomAccessCollection<Item>
     public var firstDelay: TimeInterval
     public var nextDelay: TimeInterval
     
     public private(set) var perPage = 30
     
     public init(
-        itemsPool: [Item],
+        itemsPool: any RandomAccessCollection<Item>,
         firstDelay: TimeInterval = 0,
         nextDelay: TimeInterval = 0
     ) {
@@ -57,7 +57,7 @@ private extension PaginatorMock {
 
 public extension PaginatorMock where Item == User {
     convenience init(
-        _ pool: [Item] = Samples.users,
+        _ pool: any RandomAccessCollection<Item> = Samples.users,
         firstDelay: TimeInterval = 0,
         nextDelay: TimeInterval = 0
     ) {
@@ -67,7 +67,7 @@ public extension PaginatorMock where Item == User {
 
 public extension PaginatorMock where Item == Repo {
     convenience init(
-        _ pool: [Item] = Samples.repos,
+        _ pool: any RandomAccessCollection<Item> = Samples.repos,
         firstDelay: TimeInterval = 0,
         nextDelay: TimeInterval = 0
     ) {

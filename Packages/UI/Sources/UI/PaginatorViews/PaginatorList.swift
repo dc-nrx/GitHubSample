@@ -31,9 +31,17 @@ public struct PaginatorList<Api: Paginator, Content: View>: View {
     
     public var body: some View {
         List {
-            ForEach(vm.items) { item in
-                content(item)
-                    .onAppear { vm.itemShown(item) }
+            Section {
+                ForEach(vm.items) { item in
+                    content(item)
+                        .onAppear { vm.itemShown(item) }
+                }
+            } footer: {
+                if vm.showLoadingNextPage {
+                    Text("Loading next page...")
+                } else {
+                    Text("No items left.")
+                }
             }
         }
         .onAppear(perform: vm.onAppear)
@@ -44,15 +52,19 @@ public struct PaginatorList<Api: Paginator, Content: View>: View {
 }
 
 #Preview {
+
     let vm = PaginatorVM(
-        UsersPaginatorMock(nextDelay: 2),
-        filter: 0,
-        pageSize: 30
+//        UsersPaginatorMock(Samples.users.prefix(20),
+        ReposPaginatorMock(Samples.repos,
+                           nextDelay: 2),
+        filter: .init(username: "username"),
+        pageSize: 15
     )
     
     return NavigationStack {
         PaginatorList(vm) {
-            UserCell($0)
+//            UserCell($0)
+            RepoCell($0)
         }
     }
 }
