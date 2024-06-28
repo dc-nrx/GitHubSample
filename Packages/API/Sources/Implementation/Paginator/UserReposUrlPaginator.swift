@@ -15,7 +15,11 @@ import API
 public class UserReposUrlPaginator: UrlPaginator<Repo>, Paginator {
         
     public func fetch(_ filter: UserReposFilter, perPage: Int) async throws -> ([Repo], PaginationInfo) {
-        let url = try URL(base: baseURL, path: "users", query: [:
+        guard !filter.username.isEmpty else {
+            throw ApiError.cantBeEmpty("username")
+        }
+        
+        let url = try URL(base: baseURL, path: "users/\(filter.username)/repos", query: [:
             //...
         ])
         return try await fetchPage(url: url)

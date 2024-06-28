@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  UsersView.swift
 //  
 //
 //  Created by Dmytro Chapovskyi on 26.06.2024.

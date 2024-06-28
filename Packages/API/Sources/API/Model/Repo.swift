@@ -8,14 +8,22 @@
 import Foundation
 
 public struct Repo: Identifiable, Codable {
+    
     public var id: Int
     public var nodeId: String
     public var name: String
     public var fullName: String
-    public var isPrivate: Bool
-    public var owner: User
     public var description: String?
-    public var fork: Bool
     public var url: URL
+    
+    public var owner: User
+    
+    public var `private`: Bool
+    public var fork: Bool
+    
+    public var stargazersCount: Int
+    public var forksCount: Int
+    public var language: String?
     public var languagesUrl: URL
+    
 }

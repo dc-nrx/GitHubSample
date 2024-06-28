@@ -9,7 +9,7 @@ import Foundation
 
 //TODO: Add docs & default values from the off documentation
 public struct UserReposFilter {
-
+    
     /**
      The only required parameter.
      */
@@ -32,4 +32,18 @@ public struct UserReposFilter {
         case asc, desc
     }
     public var sortOrder: SortOrder?
+    
+    public init(
+        username: String,
+        page: Int? = nil,
+        type: OwnershipType? = nil,
+        sortKey: SortKey? = nil,
+        sortOrder: SortOrder? = nil
+    ) {
+        self.username = username
+        self.page = page
+        self.type = type
+        self.sortKey = sortKey
+        self.sortOrder = sortOrder
+    }
 }

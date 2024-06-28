@@ -47,9 +47,11 @@ extension UrlPaginator {
             throw ApiError.httpError(httpResponse.statusCode)
         }
         
+        logger.info("items parsing started for \(url)")
         //TODO: ensure bg thread on parse
         let items = try JSONDecoder(keyStrategy: .convertFromSnakeCase)
             .decode([Item].self, from: data)
+        logger.info("items parsing finished for \(url)")
         
         var paginationInfo: PaginationInfo
         if let linkHeader = httpResponse.value(forHTTPHeaderField: "link") {
