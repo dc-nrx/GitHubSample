@@ -77,6 +77,7 @@ private extension DependencyContainer {
         return result
     }
     
+    @MainActor
     func makeUserDetailsVM(_ user: User) -> UserDetailsVM<API.Repos> {
         .init(user, reposPaginator: api.repos)
     }

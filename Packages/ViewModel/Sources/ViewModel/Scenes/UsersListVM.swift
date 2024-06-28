@@ -20,23 +20,11 @@ public class UserDetailsVM<P: UserReposPaginator>: ObservableObject {
     }
 }
 
-public class UsersListVM<UsersP: UsersPaginator, ReposP: UserReposPaginator>: PaginatorVM<UsersP> {
+public class UsersListVM<API: GitHubAPI>: PaginatorVM<API.Users> {
     
-    public typealias UserDetailsVMFactory = (User) -> UserDetailsVM<ReposP>
+    public typealias UserDetailsVMFactory = (User) -> UserDetailsVM<API.Repos>
     
     // TODO: make proper init
     public var userDetailsFactory: UserDetailsVMFactory!
-
-//    public var makeUserDetailsVM
-//
-//    public init(
-//        paginator: P,
-//        filter: P.Filter,
-//        pageSize: Int,
-//        pathMonitor: NWPathMonitor = .init(),
-//        distanceBeforePrefetch: Int = 10
-//    ) {
-//        
-//    }
     
 }
