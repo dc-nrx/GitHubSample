@@ -9,8 +9,8 @@ import SwiftUI
 import API
 
 @MainActor
-public class PaginatorVM<API: Paginator>: ObservableObject {
-    public typealias Item = API.Item
+public class PaginatorVM<P: Paginator>: ObservableObject {
+    public typealias Item = P.Item
     
     @Published
     public var items = [Item]()
@@ -30,13 +30,13 @@ public class PaginatorVM<API: Paginator>: ObservableObject {
     public var prefetchDistance: Int
     
     public private(set) var pageSize: Int
-    public private(set) var filter: API.Filter
+    public private(set) var filter: P.Filter
     
-    private let api: API
+    private let paginator: P
     private let pathMonitor: NWPathMonitor
-    private let logger = Logger(subsystem: "ViewModel", category: "PaginatorVM<\(API.self)")
+    private let logger = Logger(subsystem: "ViewModel", category: "PaginatorVM<\(P.self)")
     
-    private var nextPage: API.PaginationInfo.Token?
+    private var nextPage: P.PaginationInfo.Token?
     private var fetchTask: Task<Void, Never>? {
         willSet {
             let newState: ConnectionState = (newValue == nil) ? .inactive : .active
@@ -45,14 +45,14 @@ public class PaginatorVM<API: Paginator>: ObservableObject {
     }
     
     public init(
-        api: API,
-        filter: API.Filter,
+        _ paginator: P,
+        filter: P.Filter,
         pageSize: Int,
         pathMonitor: NWPathMonitor = .init(),
         distanceBeforePrefetch: Int = 10
     ) {
         logger.debug("init")
-        self.api = api
+        self.paginator = paginator
         self.prefetchDistance = distanceBeforePrefetch
         self.filter = filter
         self.pageSize = pageSize
@@ -104,7 +104,7 @@ private extension PaginatorVM {
             logger.debug("fetch task started")
             
             do {
-                let response = try await api.fetch(pageToken: nextPage)
+                let response = try await paginator.fetch(pageToken: nextPage)
                 await pageReceived(response, rewriteItems: false)
             } catch {
                 await process(error: error)
@@ -128,7 +128,7 @@ private extension PaginatorVM {
             logger.debug("refresh task started")
             
             do {
-                let response = try await api.fetch(filter, perPage: pageSize)
+                let response = try await paginator.fetch(filter, perPage: pageSize)
                 await pageReceived(response, rewriteItems: true)
             } catch {
                 await process(error: error)
@@ -141,7 +141,7 @@ private extension PaginatorVM {
     }
     
     func pageReceived(
-        _ page: ([Item], API.PaginationInfo),
+        _ page: ([Item], P.PaginationInfo),
         rewriteItems: Bool
     ) {
         let nextPageString = "\(String(describing: page.1.next))"

@@ -6,20 +6,20 @@ import API
 import ViewModel
 
 final class PaginatorVMTests: XCTestCase {
-    typealias Sut = PaginatorVM<GitHubAPIMock>
+    typealias Sut = PaginatorVM<UsersPaginatorMock>
         
     var sut: Sut!
-    var mockApi: GitHubAPIMock!
+    var mockPaginator: UsersPaginatorMock!
     var cancellables: Set<AnyCancellable>!
     
     override func setUp() async throws {
         cancellables = .init()
-        mockApi = .init()
-        sut = await .init(api: mockApi, filter: 0, pageSize: 30)
+        mockPaginator = .init()
+        sut = await .init(mockPaginator, filter: 0, pageSize: 30)
     }
     
     override func tearDown() async throws {
-        mockApi = nil
+        mockPaginator = nil
         sut = nil
         cancellables = nil
     }
@@ -32,7 +32,7 @@ final class PaginatorVMTests: XCTestCase {
     @MainActor
     func testInitialLoad_loadsFirstPage() async {
         let exp = usersExpectation(sut, dropFirst: 1) { [self] users in
-            XCTAssertEqual(users.map(\.id), mockApi.usersPool.prefix(sut.pageSize).map(\.id))
+            XCTAssertEqual(users.map(\.id), mockPaginator.itemsPool.prefix(sut.pageSize).map(\.id))
         }
         sut.onAppear()
         await fulfillment(of: [exp], timeout: 1)
@@ -45,7 +45,7 @@ final class PaginatorVMTests: XCTestCase {
         await fulfillment(of: [onAppearExp], timeout: 1)
         
         let loadNextExp = usersExpectation(sut) { [self] users in
-            XCTAssertEqual(users.map(\.id), mockApi.usersPool.prefix(sut.pageSize * 2).map(\.id))
+            XCTAssertEqual(users.map(\.id), mockPaginator.itemsPool.prefix(sut.pageSize * 2).map(\.id))
         }
         sut.itemShown(sut.items.last!)
         await fulfillment(of: [loadNextExp], timeout: 1)

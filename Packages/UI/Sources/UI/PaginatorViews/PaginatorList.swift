@@ -31,27 +31,21 @@ public struct PaginatorList<Api: Paginator, Content: View>: View {
     
     public var body: some View {
         List {
-            Section {
-                ForEach(vm.items) { item in
-                    content(item)
-                        .onAppear { vm.itemShown(item) }
-                }
+            ForEach(vm.items) { item in
+                content(item)
+                    .onAppear { vm.itemShown(item) }
             }
         }
         .onAppear(perform: vm.onAppear)
         .refreshable {
             await vm.asyncRefresh()
         }
-        .toolbar {
-            ConnectionIcon(vm.connectionState)
-                .animation(.default, value: vm.connectionState)
-        }
     }
 }
 
 #Preview {
     let vm = PaginatorVM(
-        api: GitHubAPIMock(nextDelay: 2),
+        UsersPaginatorMock(nextDelay: 2),
         filter: 0,
         pageSize: 30
     )

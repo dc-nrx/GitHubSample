@@ -48,7 +48,7 @@ public final class DependencyContainer: ObservableObject {
             api = GitHubAPIImplementation(users: users, repos: userRepos)
             
             await MainActor.run {
-                rootVM = .init(api: api.users, filter: 0, pageSize: 30)
+                rootVM = makeUsersVM()
             }
             logger.debug("Init finished")
         }
@@ -64,6 +64,15 @@ public final class DependencyContainer: ObservableObject {
         default:
             break
         }
+    }
+}
+
+// MARK: - Factory methods
+private extension DependencyContainer {
+    
+    @MainActor
+    func makeUsersVM() -> PaginatorVM<API.Users> {
+        .init(api: api.users, filter: 0, pageSize: 30)
     }
 }
 
