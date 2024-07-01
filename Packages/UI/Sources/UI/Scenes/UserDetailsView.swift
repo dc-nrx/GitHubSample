@@ -26,9 +26,22 @@ struct UserDetailsView<P: UserReposPaginator>: View {
     var body: some View {
         ScrollView {
             headerView(vm.user)
+            VStack(alignment: .leading) {
+                Text("Repos list:")
+                    .font(.headline)
+                    .frame(idealWidth: .infinity, alignment: .leading)
+                    .padding(.leading)
+                Divider()
+            }
             PaginatorLazyVStack(vm.reposPaginatorVM) { repo in
-                RepoCell(repo)
-                    .padding()
+                NavigationLink {
+                    Text("\(repo.url)")
+                } label: {
+                    RepoCell(repo)
+                        .padding()
+                        .background()
+                }
+                .buttonStyle(PlainButtonStyle())
                 Divider()
             }
         }
@@ -37,48 +50,30 @@ struct UserDetailsView<P: UserReposPaginator>: View {
         .navigationTitle(vm.user.login)
     }
     
-    @ViewBuilder @MainActor
+    var headerLayout: AnyLayout {
+        imageExtended ? AnyLayout(VStackLayout(alignment: .leading)) : AnyLayout(HStackLayout())
+    }
+    
+    @ViewBuilder
     func headerView(_ user: User) -> some View {
         VStack(alignment: .leading) {
-            HStack {
-                avatarView
+            headerLayout {
+                avatarView(user)
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                    .padding(imageExtended ? 0 : 8)
+                    .padding(.leading, imageExtended ? 0 : 8)
                     .animation(.bouncy, value: imageExtended)
-                if !imageExtended {
-                    mainDetailsView(user)
-                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                }
+                mainDetails(user)
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
             }
-            VStack(alignment: .leading) {
-                if let bio = user.bio {
-                    Text("Bio")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Text(bio)
-                }
-                Text("Repos list:")
-                    .font(.headline)
-                    .frame(alignment: .leading)
-                    .padding(.top, 16)
-                Divider()
-            }
-            .frame(idealWidth: .infinity)
-            .padding()
+            extraDetails(user)
+                .padding()
         }
     }
     
-    @ViewBuilder @MainActor
-    func mainDetailsView(_ user: User) -> some View {
-        VStack(alignment: .leading) {
-            Text(user.login)
-                .font(.callout)
-        }
-    }
-    
-    @ViewBuilder @MainActor
-    var avatarView: some View {
-        RemoteImage(url: vm.user.avatarUrl)
+    @ViewBuilder
+    func avatarView(_ user: User) -> some View {
+        RemoteImage(url: user.avatarUrl)
             .frame(minWidth: 0, maxWidth: .infinity)
             .onTapGesture {
                 withAnimation {
@@ -86,6 +81,37 @@ struct UserDetailsView<P: UserReposPaginator>: View {
                 }
             }
 
+    }
+
+    @ViewBuilder
+    func mainDetails(_ user: User) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let name = user.name {
+                Text(name)
+                    .font(.headline)
+                    .lineLimit(2)
+            }
+            if let followers = user.followers {
+                Label("\(followers)", systemImage: "person.2")
+            }
+            if let following = user.following {
+                Label("\(following)", systemImage: "figure.walk.circle")
+            }
+            Label("\(user.id)", systemImage: "grid.circle")
+            Spacer()
+        }
+    }
+
+    @ViewBuilder
+    func extraDetails(_ user: User) -> some View {
+        VStack(alignment: .leading) {
+            if let bio = user.bio {
+                Text("Bio")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(bio)
+            }
+        }
     }
 }
 
