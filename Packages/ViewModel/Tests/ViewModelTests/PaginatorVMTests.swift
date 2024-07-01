@@ -83,6 +83,8 @@ final class PaginatorVMTests: XCTestCase {
     }
     
     // TODO: Add state tests for different scenarios and bigger delay (so no transion is hidden behind debounce)
+    
+    // TODO: Tests for error handling (`errorMessage` gets updated properly - both to value and to nil upon success)
 }
 
 private extension PaginatorVMTests {

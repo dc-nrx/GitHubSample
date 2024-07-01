@@ -167,6 +167,7 @@ private extension PaginatorVM {
             } else {
                 self.items.append(contentsOf: page.0)
             }
+            errorMessage = nil
         }
     }
     
