@@ -17,7 +17,8 @@ There are also some component-specific considerations - please refer to the resp
 
 ## Important Notes
 
-As token is a sensitive piece of data, it has not been pushed into the repo. In order to use one, please add `./GitHubSample/Config/Secrets.xcconfig` file (added to .gitignore) locally, with `GITHUB_AUTH_TOKEN=your_token_here` in it. It is worth mentioning that the app works perfectly fine without a token set, so you might skip this step if you wish to.
+As token is a sensitive piece of data, it has not been pushed into the repo. In order to use one, please add `./GitHubSample/Config/Secrets.xcconfig` file (added to .gitignore) locally, with `GITHUB_AUTH_TOKEN=your_token_here` in it. You will also need to add the file to the project.
+It is worth mentioning that the app works perfectly fine without a token set, so you might skip this step if you wish to.
 
 Several consideration related to Xcode bugs:
 - I had to remove `@testable import`s from packages, as they were preventing the app from building for profiling (i.e., to analyze it via Instruments). For this reason, I had to change the access rights of some methods from internal to public.
