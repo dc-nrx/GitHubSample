@@ -9,7 +9,7 @@ The app is devided into several packages:
 
 - **GitHubSample**: the app. It is responsible only for placing the root view, and for the dependency injection.
 
-I prefer not to use 3d parties unless they have some considerable value. It is especially true in the recent years, as some many great standard frameworks have been introduced. Thus, the only external lib I've used here is SDWebImage, which handles remote images in a magnificent way (including cache).  
+I prefer not to use 3d parties unless they have some considerable value. It is especially true in the recent years, as so many great standard frameworks have been introduced. Thus, the only external lib I've used here is `SDWebImage`, which handles remote images in a magnificent way (including cache).  
 
 There are also some component-specific considerations - please refer to the respective docs to see them.
 
