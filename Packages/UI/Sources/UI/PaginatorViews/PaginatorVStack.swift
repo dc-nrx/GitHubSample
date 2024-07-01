@@ -14,7 +14,7 @@ import ViewModel
 import Preview
 
 /**
- A LazyVStack that handles `itemShown` and `nextPageLoadingStatus`.
+ A LazyVStack that handles `itemShown` and `fetchState`.
  
  - Warning: You still have to handle `vm.onAppear` and  `asyncRefresh` via enclosing container.
  */
@@ -42,7 +42,7 @@ public struct PaginatorVStack<Api: Paginator, Content: View>: View {
                 content(item)
                     .onAppear { vm.itemShown(item) }
             }
-            PaginatorVMStateView(vm.nextPageLoadingStatus) {
+            PaginatorVMStateView(vm.fetchState) {
                 vm.explicitRequestNextPageFetch()
             }
             .padding(.top)

@@ -71,7 +71,7 @@ final class PaginatorVMTests: XCTestCase {
     func testStateDebounce_wihCorrectResultingValue() async {
         let exp = XCTestExpectation(description: "status is nextPageAvailable")
         sut.onAppear()
-        sut.$nextPageLoadingStatus
+        sut.$fetchState
             .dropFirst()    // .unknown
             .sink { status in
                 XCTAssertEqual(status, .nextPageAvailable)

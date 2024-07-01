@@ -8,6 +8,12 @@ import Network
 import SwiftUI
 import API
 
+/**
+ The view model that handles pagination.
+ 
+ `@MainActor` is used to ensure that no accidental view updates
+ are initiated via a `@Published` property from any thread except for the main.
+ */
 @MainActor
 public class PaginatorVM<P: Paginator>: ObservableObject {
     public typealias Item = P.Item
@@ -15,11 +21,9 @@ public class PaginatorVM<P: Paginator>: ObservableObject {
     @Published
     public private(set) var items = [Item]()
     
-    @Published
-    public private(set) var isRefreshing = false
 
     @Published
-    public private(set) var nextPageLoadingStatus: PaginatorViewModelState = .unknown
+    public private(set) var fetchState: PaginatorViewModelState = .unknown
     
     @Published
     public private(set) var errorMessage: String?
@@ -38,6 +42,9 @@ public class PaginatorVM<P: Paginator>: ObservableObject {
     private let paginator: P
     private let logger = Logger(subsystem: "ViewModel", category: "PaginatorVM<\(P.self)")
     
+    @Published
+    private var isRefreshing = false
+
     @Published
     private var nextPage: P.PaginationInfo.Token?
     
@@ -62,6 +69,9 @@ public class PaginatorVM<P: Paginator>: ObservableObject {
 
 public extension PaginatorVM {
     
+    /**
+     Call this method on view appearance.
+     */
     func onAppear() {
         logger.info(#function)
         if items.isEmpty {
@@ -71,6 +81,8 @@ public extension PaginatorVM {
 
     /**
      The method is made `async` for convenient use in conjecture with `refreshable`.
+     
+     Request a refresh operation - that is, re-fetch the first page and replace the old content with it.
      */
     func asyncRefresh() async {
         logger.info(#function)
@@ -100,6 +112,10 @@ public extension PaginatorVM {
         }
     }
     
+    /**
+     While should not be called normally, SwiftUI's `onAppear` might not be triggered
+     in certain cases. To handle such cases, this method can be used to request next page fetch explicitly.
+     */
     func explicitRequestNextPageFetch() {
         requestNextPageFetch()
     }
@@ -189,21 +205,21 @@ private extension PaginatorVM {
         ).map { itemsEmtpy, fetching, isRefresh, nextPageAvailable in
             switch (fetching, isRefresh) {
             case (true, false):
-                return .fetchingNextPage
+                .fetchingNextPage
             case (true, true):
-                return itemsEmtpy ? .initialFetch : .refreshing
+                itemsEmtpy ? .initialFetch : .refreshing
             case (false, _):
                 if nextPageAvailable {
-                    return .nextPageAvailable
+                    .nextPageAvailable
                 } else if !itemsEmtpy {
-                    return .nextPageNotAvailable
+                    .nextPageNotAvailable
                 } else {
-                    return .empty
+                    .empty
                 }
             }
         }
         .debounce(for: 0.1, scheduler: DispatchQueue.main)
-        .assign(to: &$nextPageLoadingStatus)
+        .assign(to: &$fetchState)
     }
 }
 

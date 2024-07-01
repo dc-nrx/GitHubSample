@@ -43,7 +43,7 @@ public struct PaginatorList<Api: Paginator, Content: View>: View {
                         .onAppear { vm.itemShown(item) }
                 }
             } footer: {
-                PaginatorVMStateView(vm.nextPageLoadingStatus) {
+                PaginatorVMStateView(vm.fetchState) {
                     vm.explicitRequestNextPageFetch()
                 }
             }
