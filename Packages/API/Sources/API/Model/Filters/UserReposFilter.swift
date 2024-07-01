@@ -15,6 +15,8 @@ public struct UserReposFilter {
      */
     public var username: String
     
+    public var excludeForks = true
+    
     public var page: Int?
     
     public enum OwnershipType: String {

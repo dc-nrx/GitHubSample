@@ -15,7 +15,7 @@ public class ApiMock: GitHubAPI {
     
     public let users: Users
     public let repos: Repos
-    public var userDetailsMock: User?
+    public var userDetailsMock = Samples.userDetails
     
     public init(
         users: Users = UsersPaginatorMock(),
@@ -27,6 +27,6 @@ public class ApiMock: GitHubAPI {
     }
     
     public func userDetails(_ username: String) async throws -> User {
-        userDetailsMock!
+        userDetailsMock
     }
 }

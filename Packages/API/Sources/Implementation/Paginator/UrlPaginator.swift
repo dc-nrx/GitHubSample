@@ -13,7 +13,16 @@ import API
 public class UrlPaginator<Item: Decodable & Identifiable> {
     public typealias PaginationInfo = UrlPaginationInfo
 
+    /**
+     The base URL to resolve endpoint paths.
+     */
     let baseURL: URL
+    
+    /**
+     If there's a filter that is not supported by the remote API,
+     it can be applied to the items after a page fetch is completed.
+     */
+    var postFetchFilter: ((Item) -> Bool)?
     
     private let sessionManager: SessionManager
     private let logger = Logger(subsystem: "Implementation", category: "UrlPaginator<\(Item.self)>")
@@ -43,9 +52,14 @@ extension UrlPaginator {
         
         //TODO: ensure bg thread on parse
         logger.info("items parsing started for \(url)")
-        let items = try JSONDecoder(keyStrategy: .convertFromSnakeCase)
+        var items = try JSONDecoder(keyStrategy: .convertFromSnakeCase)
             .decode([Item].self, from: data)
         logger.info("items parsing finished for \(url)")
+        
+        if let postFetchFilter {
+            items = items.filter(postFetchFilter)
+            logger.info("filter applied to the items")
+        }
         
         var paginationInfo: PaginationInfo
         if let linkHeader = response.value(forHTTPHeaderField: "link") {

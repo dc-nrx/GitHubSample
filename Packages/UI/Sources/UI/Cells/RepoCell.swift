@@ -28,6 +28,7 @@ struct RepoCell: View {
             Text(repo.name)
                 .font(.headline)
                 .lineLimit(1)
+                .foregroundStyle(repo.fork ? .red : .primary)
             if let description = repo.description {
                 Text(description)
                     .foregroundStyle(.secondary)

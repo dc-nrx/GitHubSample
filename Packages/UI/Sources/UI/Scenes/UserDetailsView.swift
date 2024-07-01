@@ -121,6 +121,6 @@ struct UserDetailsView<API: GitHubAPI>: View {
 #Preview {
     let factory = ViewModelFactory(api: ApiMock(repos: .init(firstDelay: 0.3)))
     return NavigationStack {
-        UserDetailsView(factory.makeUserDetailsVM(Samples.users[5]))
+        UserDetailsView(factory.makeUserDetailsVM(Samples.users[2]))
     }
 }

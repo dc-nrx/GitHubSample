@@ -205,7 +205,7 @@ private extension PaginatorVM {
                 return .unknown
             }
         }
-        .debounce(for: 0.05, scheduler: DispatchQueue.main)
+//        .debounce(for: 0.1, scheduler: DispatchQueue.main)
         .assign(to: &$nextPageLoadingStatus)
     }
 }

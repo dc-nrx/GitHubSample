@@ -18,10 +18,33 @@ public class UserReposUrlPaginator: UrlPaginator<Repo>, Paginator {
         guard !filter.username.isEmpty else {
             throw ApiError.cantBeEmpty("username")
         }
+        var query = filter.query
+        query["per_page"] = perPage
         
-        let url = try URL(base: baseURL, path: "users/\(filter.username)/repos", query: [:
-            //...
-        ])
+        if filter.excludeForks {
+            postFetchFilter = { !$0.fork }
+        }
+        
+        let url = try URL(base: baseURL, path: "users/\(filter.username)/repos", query: query)
         return try await fetchPage(url: url)
+    }
+}
+
+private extension UserReposFilter {
+    var query: [String: Any] {
+        var result = [String: Any]()
+        if let page {
+            result["page"] = page
+        }
+        if let type {
+            result["type"] = type.rawValue
+        }
+        if let sortOrder {
+            result["direction"] = sortOrder.rawValue
+        }
+        if let sortKey {
+            result["sort"] = sortKey.rawValue
+        }
+        return result
     }
 }

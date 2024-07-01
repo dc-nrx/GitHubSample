@@ -37,7 +37,7 @@ public struct PaginatorVStack<Api: Paginator, Content: View>: View {
     }
     
     public var body: some View {
-        VStack {
+        LazyVStack {
             ForEach(vm.items) { item in
                 content(item)
                     .onAppear { vm.itemShown(item) }
