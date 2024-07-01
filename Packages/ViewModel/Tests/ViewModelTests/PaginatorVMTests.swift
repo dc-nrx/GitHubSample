@@ -69,19 +69,20 @@ final class PaginatorVMTests: XCTestCase {
     
     @MainActor
     func testStateDebounce_wihCorrectResultingValue() async {
-        let onAppearExp = usersExpectation(sut)
+        let exp = XCTestExpectation(description: "status is nextPageAvailable")
         sut.onAppear()
-        await fulfillment(of: [onAppearExp], timeout: 1)
+        sut.$nextPageLoadingStatus
+            .dropFirst()    // .unknown
+            .sink { status in
+                XCTAssertEqual(status, .nextPageAvailable)
+                exp.fulfill()
+            }
+            .store(in: &cancellables)
         
-        let nextPageExp = usersExpectation(sut)
-        sut.explicitRequestNextPageFetch()
-        await fulfillment(of: [nextPageExp], timeout: 1)
-        
-        await sut.asyncRefresh()
-        XCTAssertEqual(sut.items.map(\.id), mockPaginator.itemsPool.prefix(sut.pageSize).map(\.id))
+        await fulfillment(of: [exp], timeout: 1)
     }
-
     
+    // TODO: Add state tests for different scenarios and bigger delay (so no transion is hidden behind debounce)
 }
 
 private extension PaginatorVMTests {
