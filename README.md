@@ -52,3 +52,4 @@ While the minimum specifications have been met, there are quite a few things I w
 - Pull Request pipeline - 1) run unit- (and UI-, if any) tests and block merge to develop/main if any fails. 2) check minimum test coverage for `ViewModel` and `API` packages and block the PR if it is not sufficient. 
 - Enhance TipKit integration
 - Tune the image resize animation in user details (e.g. animation path of the text and overlap with the image while animating)
+- Disable landscape orientation for certain scenes on iOS (at least in the users list, probably user details and web view as well)
