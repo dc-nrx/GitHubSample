@@ -1,0 +1,126 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空の"
+          }
+        }
+      }
+    },
+    "Fetching first page..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最初のページを取得しています..."
+          }
+        }
+      }
+    },
+    "Initialization..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初期化中..."
+          }
+        }
+      }
+    },
+    "Load next page" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次のページを読み込む"
+          }
+        }
+      }
+    },
+    "Loading next page..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次のページを読み込んでいます..."
+          }
+        }
+      }
+    },
+    "Nothing left to fetch." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取得するものが残っていません"
+          }
+        }
+      }
+    },
+    "Refreshing..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "爽やか…"
+          }
+        }
+      }
+    },
+    "Repos list:" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リポジトリリスト"
+          }
+        }
+      }
+    },
+    "Tap to extend!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タップして拡張します!"
+          }
+        }
+      }
+    },
+    "The avatar can be extended to full screen width." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アバターは全画面幅まで拡張できます。"
+          }
+        }
+      }
+    },
+    "Users" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ユーザーリスト"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
