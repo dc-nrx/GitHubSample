@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+
+import SDWebImageSwiftUI
+
 import API
 import ViewModel
 import Preview
@@ -19,16 +22,31 @@ struct UserDetailsView<P: UserReposPaginator>: View {
     }
     
     var body: some View {
-        VStack {
-            Text(vm.user.login)
-                .font(.callout)
-            PaginatorList(vm.reposPaginatorVM) { repo in
+        ScrollView {
+            userInfoView(vm.user)
+            PaginatorLazyVStack(vm.reposPaginatorVM) { repo in
                 RepoCell(repo)
+                    .padding()
+                Divider()
             }
-            .ignoresSafeArea()
         }
         .onAppear { vm.reposPaginatorVM.onAppear() }
         .navigationTitle(vm.user.login)
+    }
+    
+    @ViewBuilder @MainActor
+    func userInfoView(_ user: User) -> some View {
+        HStack {
+            RemoteImage(url: user.avatarUrl)
+                .frame(minWidth: 0, maxWidth: .infinity)
+            HStack {
+                Text(vm.user.login)
+                    .font(.callout)
+                Text(user.bio)
+            }
+            .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+        }
+        .padding()
     }
 }
 

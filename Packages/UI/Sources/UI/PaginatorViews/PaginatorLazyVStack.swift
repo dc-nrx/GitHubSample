@@ -1,8 +1,8 @@
 //
-//  File.swift
+//  UsersView.swift
 //  
 //
-//  Created by Dmytro Chapovskyi on 01.07.2024.
+//  Created by Dmytro Chapovskyi on 26.06.2024.
 //
 
 import SwiftUI
@@ -13,13 +13,17 @@ import API
 import ViewModel
 import Preview
 
-public struct PaginatorList<Api: Paginator, Content: View>: View {
+/**
+ A LazyVStack that handles `itemShown` and `nextPageLoadingStatus`.
+ 
+ - Warning: You still have to handle `vm.onAppear` and  `asyncRefresh` via enclosing container.
+ */
+public struct PaginatorLazyVStack<Api: Paginator, Content: View>: View {
     
-    @ObservedObject
+    @ObservedObject 
     public var vm: PaginatorVM<Api>
     
-    // TODO: Move to env
-    @State
+    @State 
     public var imageSide: CGFloat = 64
     
     private var content: (Api.Item) -> Content
@@ -33,21 +37,16 @@ public struct PaginatorList<Api: Paginator, Content: View>: View {
     }
     
     public var body: some View {
-        List {
-            Section {
-                ForEach(vm.items) { item in
-                    content(item)
-                        .onAppear { vm.itemShown(item) }
-                }
-            } footer: {
-                LoadingStatusView(vm.nextPageLoadingStatus) {
-                    vm.explicitRequestNextPageFetch()
-                }
+        LazyVStack {
+            ForEach(vm.items) { item in
+                content(item)
+                    .onAppear { vm.itemShown(item) }
             }
-        }
-        .onAppear(perform: vm.onAppear)
-        .refreshable {
-            await vm.asyncRefresh()
+            LoadingStatusView(vm.nextPageLoadingStatus) {
+                vm.explicitRequestNextPageFetch()
+            }
+            .padding(.top)
+            .foregroundStyle(.secondary)
         }
     }
 }
@@ -63,10 +62,15 @@ public struct PaginatorList<Api: Paginator, Content: View>: View {
     )
     
     return NavigationStack {
-            PaginatorList(vm) {
+        ScrollView {
+            PaginatorLazyVStack(vm) {
                 //            UserCell($0)
                 RepoCell($0)
             }
-        .listRowSeparator(.visible, edges: /*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+        }
+        .onAppear(perform: vm.onAppear)
+        .refreshable {
+            await vm.asyncRefresh()
+        }
     }
 }
