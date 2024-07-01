@@ -8,7 +8,7 @@
 import SwiftUI
 import ViewModel
 
-struct LoadingStatusView: View {
+struct PaginatorVMStateView: View {
     
     let status: PaginatorViewModelState
     let action: () -> Void
@@ -40,12 +40,12 @@ struct LoadingStatusView: View {
 
 #Preview {
     VStack {
-        LoadingStatusView(.nextPageAvailable) { }
-        LoadingStatusView(.nextPageNotAvailable) { }
-        LoadingStatusView(.fetchingNextPage) { }
-        LoadingStatusView(.refreshing) { }
-        LoadingStatusView(.initialFetch) { }
-        LoadingStatusView(.empty) { }
-        LoadingStatusView(.unknown) { }
+        PaginatorVMStateView(.nextPageAvailable) { }
+        PaginatorVMStateView(.nextPageNotAvailable) { }
+        PaginatorVMStateView(.fetchingNextPage) { }
+        PaginatorVMStateView(.refreshing) { }
+        PaginatorVMStateView(.initialFetch) { }
+        PaginatorVMStateView(.empty) { }
+        PaginatorVMStateView(.unknown) { }
     }
 }

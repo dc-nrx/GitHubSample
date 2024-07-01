@@ -42,7 +42,7 @@ public struct PaginatorVStack<Api: Paginator, Content: View>: View {
                 content(item)
                     .onAppear { vm.itemShown(item) }
             }
-            LoadingStatusView(vm.nextPageLoadingStatus) {
+            PaginatorVMStateView(vm.nextPageLoadingStatus) {
                 vm.explicitRequestNextPageFetch()
             }
             .padding(.top)
