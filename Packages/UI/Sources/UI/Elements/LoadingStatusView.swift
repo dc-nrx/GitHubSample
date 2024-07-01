@@ -10,10 +10,10 @@ import ViewModel
 
 struct LoadingStatusView: View {
     
-    let status: NextPageInfo
+    let status: PaginatorViewModelState
     let action: () -> Void
     
-    init(_ status: NextPageInfo, action: @escaping () -> Void) {
+    init(_ status: PaginatorViewModelState, action: @escaping () -> Void) {
         self.status = status
         self.action = action
     }
@@ -22,21 +22,30 @@ struct LoadingStatusView: View {
         switch status {
         case .unknown:
             EmptyView()
-        case .available:
-            Button("Load next") { action() }
-        case .fetching:
+        case .initialFetch:
+            Text("Fetching first page...")
+        case .refreshing:
+            Text("Refreshing...")
+        case .fetchingNextPage:
             Text("Loading next page...")
-        case .notAvailable:
+        case .nextPageAvailable:
+            Button("Load next") { action() }
+        case .nextPageNotAvailable:
             Text("Nothing left to fetch.")
+        case .empty:
+            Text("Empty")
         }
     }
 }
 
 #Preview {
     VStack {
-        LoadingStatusView(.available) { }
-        LoadingStatusView(.fetching) { }
-        LoadingStatusView(.notAvailable) { }
+        LoadingStatusView(.nextPageAvailable) { }
+        LoadingStatusView(.nextPageNotAvailable) { }
+        LoadingStatusView(.fetchingNextPage) { }
+        LoadingStatusView(.refreshing) { }
+        LoadingStatusView(.initialFetch) { }
+        LoadingStatusView(.empty) { }
         LoadingStatusView(.unknown) { }
     }
 }

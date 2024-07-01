@@ -36,7 +36,6 @@ public struct User: Identifiable, Codable, Hashable {
 
     public var name: String?
     public var company: String?
-    public var blog: URL?
     public var location: String?
     public var email: String?
     public var hireable: Bool?

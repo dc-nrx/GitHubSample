@@ -18,7 +18,7 @@ import Preview
  
  - Warning: You still have to handle `vm.onAppear` and  `asyncRefresh` via enclosing container.
  */
-public struct PaginatorLazyVStack<Api: Paginator, Content: View>: View {
+public struct PaginatorVStack<Api: Paginator, Content: View>: View {
     
     @ObservedObject 
     public var vm: PaginatorVM<Api>
@@ -37,7 +37,7 @@ public struct PaginatorLazyVStack<Api: Paginator, Content: View>: View {
     }
     
     public var body: some View {
-        LazyVStack {
+        VStack {
             ForEach(vm.items) { item in
                 content(item)
                     .onAppear { vm.itemShown(item) }
@@ -63,7 +63,7 @@ public struct PaginatorLazyVStack<Api: Paginator, Content: View>: View {
     
     return NavigationStack {
         ScrollView {
-            PaginatorLazyVStack(vm) {
+            PaginatorVStack(vm) {
                 //            UserCell($0)
                 RepoCell($0)
             }

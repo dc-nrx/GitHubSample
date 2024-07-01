@@ -19,7 +19,7 @@ public class PaginatorVM<P: Paginator>: ObservableObject {
     public private(set) var isRefreshing = false
 
     @Published
-    public private(set) var nextPageLoadingStatus: NextPageInfo = .unknown
+    public private(set) var nextPageLoadingStatus: PaginatorViewModelState = .unknown
     
     @Published
     public private(set) var errorMessage: String?
@@ -182,22 +182,30 @@ private extension PaginatorVM {
     }
     
     func scheduleNextPageInfoUpdates() {
-        Publishers.CombineLatest3(
+        Publishers.CombineLatest4(
+            $items.map { $0.isEmpty },
             $fetchTask.map { $0 != nil },
             $isRefreshing,
             $nextPage.map { $0 != nil }
-        ).map { fetching, isRefresh, nextPageAvailable in
+        ).map { itemsEmtpy, fetching, isRefresh, nextPageAvailable in
             switch (fetching, isRefresh) {
             case (true, false):
-                .fetching
+                return .fetchingNextPage
             case (true, true):
-                .unknown
+                return itemsEmtpy ? .initialFetch : .refreshing
             case (false, false):
-                nextPageAvailable ? .available : .notAvailable
+                if nextPageAvailable {
+                    return .nextPageAvailable
+                } else if !itemsEmtpy {
+                    return .nextPageNotAvailable
+                } else {
+                    return .empty
+                }
             default:
-                .unknown
+                return .unknown
             }
         }
+        .debounce(for: 0.05, scheduler: DispatchQueue.main)
         .assign(to: &$nextPageLoadingStatus)
     }
 }

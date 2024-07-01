@@ -21,7 +21,7 @@ public final class DependencyContainer: ObservableObject {
     private let logger = Logger(subsystem: "GitHubSample", category: "DependencyContainer")
     
     @Published @MainActor
-    public var rootVM: PaginatorVM<API.Users>?
+    public var rootVM: UsersListVM<API>?
     
     /**
      - Warning: Intended to use in unit tests only.
@@ -42,13 +42,10 @@ public final class DependencyContainer: ObservableObject {
             let persistedRecords: [RateLimiter.Record]? = try? await persistanceProvider?.readValue(for: rateLimiterKey)
             rateLimiter = RateLimiter(rateLimiterConfig, persistedRecords: persistedRecords ?? [])
             sessionManager = GitHubSessionManager(rateLimiter: self.rateLimiter, authToken: Env.shared.githubAuthToken)
-            
-            let users = UsersUrlPaginator(sessionManager: sessionManager)
-            let userRepos = UserReposUrlPaginator(sessionManager: sessionManager)
-            api = GitHubAPIImplementation(users: users, repos: userRepos)
+            api = GitHubAPIImplementation(sessionManager: sessionManager)
             
             await MainActor.run {
-                rootVM = makeUsersVM()
+                rootVM = ViewModelFactory(api: api).makeUsersVM()
             }
             logger.debug("Init finished")
         }
@@ -64,22 +61,6 @@ public final class DependencyContainer: ObservableObject {
         default:
             break
         }
-    }
-}
-
-// MARK: - Factory methods
-private extension DependencyContainer {
-    
-    @MainActor
-    func makeUsersVM() -> UsersListVM<API.Users, API.Repos> {
-        let result = UsersListVM<API.Users, API.Repos>(api.users, filter: 0, pageSize: 30)
-        result.userDetailsFactory = makeUserDetailsVM
-        return result
-    }
-    
-    @MainActor
-    func makeUserDetailsVM(_ user: User) -> UserDetailsVM<API.Repos> {
-        .init(user, reposPaginator: api.repos)
     }
 }
 

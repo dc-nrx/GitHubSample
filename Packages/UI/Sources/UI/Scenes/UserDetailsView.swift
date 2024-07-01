@@ -13,13 +13,14 @@ import API
 import ViewModel
 import Preview
 
-struct UserDetailsView<P: UserReposPaginator>: View {
+struct UserDetailsView<API: GitHubAPI>: View {
     
-    var vm: UserDetailsVM<P>
+    @ObservedObject
+    var vm: UserDetailsVM<API>
     
     @State var imageExtended = false
     
-    init(_ vm: UserDetailsVM<P>) {
+    init(_ vm: UserDetailsVM<API>) {
         self.vm = vm
     }
     
@@ -33,7 +34,7 @@ struct UserDetailsView<P: UserReposPaginator>: View {
                     .padding(.leading)
                 Divider()
             }
-            PaginatorLazyVStack(vm.reposPaginatorVM) { repo in
+            PaginatorVStack(vm.reposPaginatorVM) { repo in
                 NavigationLink {
                     Text("\(repo.url)")
                 } label: {
@@ -46,7 +47,8 @@ struct UserDetailsView<P: UserReposPaginator>: View {
             }
         }
         .animation(.bouncy(), value: imageExtended)
-        .onAppear { vm.reposPaginatorVM.onAppear() }
+        .task { await vm.onAppear() }
+        .refreshable(action: vm.refresh)
         .navigationTitle(vm.user.login)
     }
     
@@ -109,6 +111,7 @@ struct UserDetailsView<P: UserReposPaginator>: View {
                 Text("Bio")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .lineLimit(12)
                 Text(bio)
             }
         }
@@ -116,8 +119,8 @@ struct UserDetailsView<P: UserReposPaginator>: View {
 }
 
 #Preview {
-    let factory = ViewModelFactory(api: ApiMock())
+    let factory = ViewModelFactory(api: ApiMock(repos: .init(firstDelay: 0.3)))
     return NavigationStack {
-        UserDetailsView(factory.makeUserDetailsVM(Samples.userDetails))
+        UserDetailsView(factory.makeUserDetailsVM(Samples.users[5]))
     }
 }

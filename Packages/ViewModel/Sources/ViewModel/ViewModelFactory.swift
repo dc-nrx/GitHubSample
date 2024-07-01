@@ -23,7 +23,7 @@ public class ViewModelFactory<API: GitHubAPI> {
         return result
     }
     
-    public func makeUserDetailsVM(_ user: User) -> UserDetailsVM<API.Repos> {
-        .init(user, reposPaginator: api.repos)
+    public func makeUserDetailsVM(_ user: User) -> UserDetailsVM<API> {
+        .init(user, api: api)
     }
 }
