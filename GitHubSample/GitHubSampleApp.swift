@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import TipKit
+
 import UI
-import Preview
 import ViewModel
 import API
 import Implementation
@@ -28,6 +29,25 @@ struct GitHubSampleApp: App {
                     Text("Initialization...")
                 }
             }
+            .task {
+                if #available(iOS 17, *) {
+                    setupTips()
+                }
+            }
+        }
+    }
+    
+    @available(iOS 17, *)
+    func setupTips() {
+        do {
+            try Tips.configure([
+                .displayFrequency(.immediate),
+                .datastoreLocation(.applicationDefault)
+            ])
+        }
+        catch {
+            // Handle TipKit errors
+            print("Error initializing TipKit \(error.localizedDescription)")
         }
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 import SDWebImageSwiftUI
 
@@ -21,6 +22,9 @@ struct UserDetailsView<API: GitHubAPI>: View {
     @State var imageExtended = false
     
     @State var presentedRepo: Repo?
+    
+    @available(iOS 17, *)
+    private var extendAvatarTip: ExtendAvatarTip { ExtendAvatarTip() }
     
     init(_ vm: UserDetailsVM<API>) {
         self.vm = vm
@@ -75,6 +79,9 @@ struct UserDetailsView<API: GitHubAPI>: View {
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal)
             }
+            if #available(iOS 17, *) {
+                TipView(extendAvatarTip)
+            }
             extraDetails(user)
                 .padding()
         }
@@ -89,7 +96,6 @@ struct UserDetailsView<API: GitHubAPI>: View {
                     imageExtended.toggle()
                 }
             }
-
     }
 
     @ViewBuilder
