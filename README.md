@@ -51,3 +51,4 @@ While the minimum specifications have been met, there are quite a few things I w
 - Moving response parsing & disc access operations to a background thread. However, taking into account the rather limited magnitude of these operations in the app, it might not be feasible.
 - Pull Request pipeline - 1) run unit- (and UI-, if any) tests and block merge to develop/main if any fails. 2) check minimum test coverage for `ViewModel` and `API` packages and block the PR if it is not sufficient. 
 - Enhance TipKit integration
+- Tune the image resize animation in user details (e.g. animation path of the text and overlap with the image while animating)

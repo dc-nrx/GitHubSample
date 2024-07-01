@@ -1,6 +1,17 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "An error occured:" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エラーが発生した"
+          }
+        }
+      }
+    },
     "Empty" : {
       "extractionState" : "manual",
       "localizations" : {
