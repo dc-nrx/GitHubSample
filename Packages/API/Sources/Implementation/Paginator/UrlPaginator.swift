@@ -10,6 +10,12 @@ import OSLog
 
 import API
 
+/**
+ The base abstract class for `UrlPaginationInfo`-based pagination.
+ 
+ While not explicitly conforming to `Paginator`, it has the implementation of `fetch(pageToken:)`,
+ and `fetchPage(url:)` that is used by concrete subclasses (see `UserReposUrlPaginator` and `UsersUrlPaginator`)
+ */
 public class UrlPaginator<Item: Decodable & Identifiable> {
     public typealias PaginationInfo = UrlPaginationInfo
 
@@ -50,7 +56,7 @@ extension UrlPaginator {
         
         let (data, response) = try await sessionManager.data(.get, from: url)
         
-        //TODO: ensure bg thread on parse
+        //TODO: move parsing to background
         logger.info("items parsing started for \(url)")
         var items = try JSONDecoder(keyStrategy: .convertFromSnakeCase)
             .decode([Item].self, from: data)

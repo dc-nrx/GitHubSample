@@ -8,6 +8,11 @@
 import Foundation
 import API
 
+/**
+ The standard implementation of `PaginationInfoProtocol`.
+ 
+ Used to extract the pagination urls from the API response headers, and use them afterwards.
+ */
 public struct UrlPaginationInfo: PaginationInfoProtocol, Equatable {
     public typealias Token = URL
     
@@ -23,6 +28,7 @@ public struct UrlPaginationInfo: PaginationInfoProtocol, Equatable {
         self.last = last
     }
 }
+
 public extension UrlPaginationInfo {
 
     init(githubLinkHeader: String) throws {

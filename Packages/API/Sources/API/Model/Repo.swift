@@ -7,6 +7,9 @@
 
 import Foundation
 
+/**
+ The struct representing a repository.
+ */
 public struct Repo: Identifiable, Codable {
     
     public var id: Int
@@ -14,7 +17,11 @@ public struct Repo: Identifiable, Codable {
     public var name: String
     public var fullName: String
     public var description: String?
+    
+    /// The repo `git` url.
     public var url: URL
+    
+    /// The url of title `html` page.
     public var htmlUrl: URL
     
     public var owner: User

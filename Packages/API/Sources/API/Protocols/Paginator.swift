@@ -24,6 +24,14 @@ public protocol Paginator<Item, Filter> {
 public typealias UserReposPaginator = Paginator<Repo, UserReposFilter>
 public typealias UsersPaginator = Paginator<User, Int>
 
+/**
+ A protocol is used instead to keep the architecture agnostic of the implementation detils.
+ 
+ It is possible that in a future versions of the API URLs (which are used for pagination now)
+ might get replaced with some other kind data (e.g. just a set of parameters)
+ 
+ In addition to the ideological reasons, it has proven advantageous for a cleaner mocks implementation - see `PaginatorMock`.
+ */
 public protocol PaginationInfoProtocol {
     associatedtype Token
     

@@ -9,8 +9,14 @@ import Foundation
 import API
 
 /**
- Tests:
- - on-page has no link header - no throw
+ The paginator to fetch user repositories.
+ 
+ Supports all the filters available by the API, and a local filter
+ that can exclude all repositories that are forks. (as it was a requirement)
+ 
+ In the similar way, can be extended to support virtually any kind of post-fetch filtering.
+ 
+ (see `UserReposFilter` for details)
  */
 public class UserReposUrlPaginator: UrlPaginator<Repo>, Paginator {
         

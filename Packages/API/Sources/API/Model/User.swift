@@ -7,8 +7,18 @@
 
 import Foundation
 
+/**
+ Represents both short version of user (retrieved via `GitHubAPI.users`),
+ and extended version (retrieved via `GitHubAPI.userDetails`).
+ */
 public struct User: Identifiable, Codable, Hashable {
     
+    /**
+     `createdAt` is a good marker as it's 1) not present in a short version and 2) is never nil in extended one
+     
+     - Note: A better way would be to write a custom `Decodable` implementation and unpack
+     the extended info into a separate sub-structure, and check it for `!= nil` instead of having this property.
+     */
     public var isExtended: Bool { createdAt != nil }
     
     // MARK: - Basic Properties
@@ -33,7 +43,8 @@ public struct User: Identifiable, Codable, Hashable {
     public var siteAdmin: Bool
     
     // MARK: - Extended Properties
-
+    // TODO: Write custom Decodable and move the whole bunch to a separate struct
+    
     public var name: String?
     public var company: String?
     public var location: String?

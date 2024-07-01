@@ -3,6 +3,9 @@
 
 import Foundation
 
+/**
+ The protocol represents the remote API provided by github.
+ */
 public protocol GitHubAPI<PaginationInfo>: AnyObject {
     associatedtype PaginationInfo: PaginationInfoProtocol
     

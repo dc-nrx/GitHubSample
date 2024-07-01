@@ -10,13 +10,10 @@ import API
 import OSLog
 
 /**
- Rate limiter to track record of all requests and limit them as needed.
- 
- 
+ Rate limiter to track record of all requests and limit them as required.
  
  - Note: `actor` is used to prevent race conditions during `records` alterations.
  */
-
 public actor RateLimiter {
     public typealias Record = Date
     
