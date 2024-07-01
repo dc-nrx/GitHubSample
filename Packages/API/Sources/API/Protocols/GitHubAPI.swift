@@ -11,4 +11,6 @@ public protocol GitHubAPI<PaginationInfo>: AnyObject {
     
     associatedtype Repos: UserReposPaginator where Repos.PaginationInfo == PaginationInfo
     var repos: Repos { get }
+    
+    func userDetails(_ username: String) async throws -> User
 }

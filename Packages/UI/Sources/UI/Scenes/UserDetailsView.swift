@@ -42,7 +42,9 @@ struct UserDetailsView<P: UserReposPaginator>: View {
             HStack {
                 Text(vm.user.login)
                     .font(.callout)
-                Text(user.bio)
+                if let bio = user.bio {
+                    Text(bio)
+                }
             }
             .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
         }

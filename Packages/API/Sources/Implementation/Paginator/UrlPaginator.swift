@@ -40,21 +40,15 @@ extension UrlPaginator {
         logger.debug("requested fetchPage with \(url)")
         
         let (data, response) = try await sessionManager.data(.get, from: url)
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw ApiError.invalidServerResponse(response)
-        }
-        guard (200..<400).contains(httpResponse.statusCode) else {
-            throw ApiError.httpError(httpResponse.statusCode)
-        }
         
-        logger.info("items parsing started for \(url)")
         //TODO: ensure bg thread on parse
+        logger.info("items parsing started for \(url)")
         let items = try JSONDecoder(keyStrategy: .convertFromSnakeCase)
             .decode([Item].self, from: data)
         logger.info("items parsing finished for \(url)")
         
         var paginationInfo: PaginationInfo
-        if let linkHeader = httpResponse.value(forHTTPHeaderField: "link") {
+        if let linkHeader = response.value(forHTTPHeaderField: "link") {
             paginationInfo = try PaginationInfo(githubLinkHeader: linkHeader)
         } else {
             paginationInfo = .init()

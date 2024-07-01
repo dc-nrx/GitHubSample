@@ -12,7 +12,7 @@ import Foundation
  */
 public protocol SessionManager {
     
-    func data(_ method: HttpMethod, from url: URL) async throws -> (Data, URLResponse)
+    func data(_ method: HttpMethod, from url: URL) async throws -> (Data, HTTPURLResponse)
     var authToken: String? { get set }
 }
 

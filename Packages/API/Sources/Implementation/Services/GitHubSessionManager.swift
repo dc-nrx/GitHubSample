@@ -2,32 +2,17 @@
 //  File.swift
 //  
 //
-//  Created by Dmytro Chapovskyi on 24.06.2024.
+//  Created by Dmytro Chapovskyi on 01.07.2024.
 //
 
 import Foundation
 import API
 import OSLog
 
-public class GitHubAPIImplementation: GitHubAPI {
-    public typealias PaginationInfo = UrlPaginationInfo
-        
-    public var users: UsersUrlPaginator
-    public var repos: UserReposUrlPaginator
-    
-    public init(
-        users: UsersUrlPaginator,
-        repos: UserReposUrlPaginator
-    ) {
-        self.users = users
-        self.repos = repos
-    }
-}
-
 public class GitHubSessionManager {
     public static let authKey = "Authorization"
     
-    public var authToken: String?    
+    public var authToken: String?
     
     let logger = Logger(subsystem: "API", category: "GitHubAPIImplementation")
     
@@ -47,10 +32,17 @@ public class GitHubSessionManager {
 
 extension GitHubSessionManager: SessionManager {
        
-    public func data(_ method: HttpMethod, from url: URL) async throws -> (Data, URLResponse) {
+    public func data(_ method: HttpMethod, from url: URL) async throws -> (Data, HTTPURLResponse) {
         try await rateLimiter.record(ignoreLimitExceededCheck: ignoreRateLimit)
         let request = makeRequest(method, for: url)
-        return try await session.data(for: request)
+        let (data, response) = try await session.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw ApiError.invalidServerResponse(response)
+        }
+        guard (200..<400).contains(httpResponse.statusCode) else {
+            throw ApiError.httpError(httpResponse.statusCode)
+        }
+        return (data, httpResponse)
     }
 }
 
