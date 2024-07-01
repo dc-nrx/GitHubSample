@@ -13,6 +13,17 @@ public class UsersListVM<API: GitHubAPI>: PaginatorVM<API.Users> {
     
     public typealias UserDetailsVMFactory = (User) -> UserDetailsVM<API>
     
-    // TODO: make proper init
-    public var userDetailsFactory: UserDetailsVMFactory!
+    public var userDetailsFactory: UserDetailsVMFactory
+    
+    init(
+        _ paginator: API.Users,
+        filter: API.Users.Filter,
+        pageSize: Int,
+        prefetchDistance: Int? = 3,
+        userDetailsFactory: @escaping UserDetailsVMFactory
+    ) {
+        self.userDetailsFactory = userDetailsFactory
+        super.init(paginator, filter: filter, pageSize: pageSize, prefetchDistance: prefetchDistance)
+    }
+    
 }

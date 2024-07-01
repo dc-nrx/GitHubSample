@@ -14,7 +14,7 @@ final class PaginatorVMTests: XCTestCase {
     
     override func setUp() async throws {
         cancellables = .init()
-        mockPaginator = .init()
+        mockPaginator = .init(firstDelay: 0.05, nextDelay: 0.05)
         sut = await .init(mockPaginator, filter: 0, pageSize: 30)
     }
     
@@ -50,6 +50,38 @@ final class PaginatorVMTests: XCTestCase {
         sut.itemShown(sut.items.last!)
         await fulfillment(of: [loadNextExp], timeout: 1)
     }
+    
+    @MainActor
+    func testRefreshAfter2PagesLoaded_containFirstPageOnly() async {
+        let onAppearExp = usersExpectation(sut)
+        sut.onAppear()
+        await fulfillment(of: [onAppearExp], timeout: 1)
+        
+        let nextPageExp = usersExpectation(sut)
+        sut.explicitRequestNextPageFetch()
+        await fulfillment(of: [nextPageExp], timeout: 1)
+        
+        await sut.asyncRefresh()
+        XCTAssertEqual(sut.items.map(\.id), mockPaginator.itemsPool.prefix(sut.pageSize).map(\.id))
+    }
+
+    // TODO: Add tests with significatly delayed responses
+    
+    @MainActor
+    func testStateDebounce_wihCorrectResultingValue() async {
+        let onAppearExp = usersExpectation(sut)
+        sut.onAppear()
+        await fulfillment(of: [onAppearExp], timeout: 1)
+        
+        let nextPageExp = usersExpectation(sut)
+        sut.explicitRequestNextPageFetch()
+        await fulfillment(of: [nextPageExp], timeout: 1)
+        
+        await sut.asyncRefresh()
+        XCTAssertEqual(sut.items.map(\.id), mockPaginator.itemsPool.prefix(sut.pageSize).map(\.id))
+    }
+
+    
 }
 
 private extension PaginatorVMTests {

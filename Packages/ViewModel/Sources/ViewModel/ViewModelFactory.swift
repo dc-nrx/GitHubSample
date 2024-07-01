@@ -18,9 +18,7 @@ public class ViewModelFactory<API: GitHubAPI> {
     }
     
     public func makeUsersVM() -> UsersListVM<API> {
-        let result = UsersListVM<API>(api.users, filter: 0, pageSize: 30)
-        result.userDetailsFactory = makeUserDetailsVM
-        return result
+        .init(api.users, filter: 0, pageSize: 30, userDetailsFactory: makeUserDetailsVM)
     }
     
     public func makeUserDetailsVM(_ user: User) -> UserDetailsVM<API> {
