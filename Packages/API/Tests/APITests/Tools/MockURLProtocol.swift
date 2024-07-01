@@ -6,6 +6,9 @@
 //
 import Foundation
 
+/**
+ Used in conjunction with ``MockURLProtocol``.
+ */
 enum RequestHandler {
     case error(Error)
     case closure((URLRequest) -> (URLResponse, Data?))
@@ -34,14 +37,23 @@ enum RequestHandler {
 
 typealias RequestSpy = (URLRequest) -> ()
 
+/**
+ The only reasonable way inject a mock URLSession.
+ 
+ See `GitHubAPIImplementationTests.setUpWithError` for example usage.
+ */
 class MockURLProtocol: URLProtocol {
 
-    /// Handler to test the request and return mock response.
-    ///
-    /// While using `static` is not the best way to go,
-    /// it still is a reasonable tradeoff in the current case.
+    /**
+     Handler to process the request and return mock response.
+     
+     While using `static` is not the best way to go, it still is a reasonable tradeoff in the current case.
+     */
     static var requestHandler: RequestHandler?
 
+    /**
+     Handler to conveniently test the request before executing `requestHandler`.
+     */
     static var requestSpy: RequestSpy?
     
     override func startLoading() {

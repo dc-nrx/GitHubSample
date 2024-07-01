@@ -73,6 +73,8 @@ final class RateLimiterTests: XCTestCase {
             XCTFail("Unexpected error \(error)")
         }
     }
+    
+    // TODO: Add test to verify writing on disc after each record
 }
 
 private extension RateLimiterTests {
