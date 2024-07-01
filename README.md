@@ -9,9 +9,13 @@ The app is devided into several packages:
 
 - **GitHubSample**: the app. It is responsible only for placing the root view, and for the dependency injection.
 
+I prefer not to use 3d parties unless they have some considerable value. It is especially true in the recent years, as some many great standard frameworks have been introduced. Thus, the only external lib I've used here is SDWebImage, which handles remote images in a magnificent way (including cache).  
+
+There are also some component-specific considerations - please refer to the respective docs to see them.
+
 ## Important Notes
 
-As token is a sensitive piece of data, it has not been pushed into the repo. In order to use one, please add **Config/Secrets.xcconfig** (added to .gitignore) locally, with `GITHUB_AUTH_TOKEN=your_token_here`. It is worth mentioning that the app works perfectly fine without a token set, so you might skip this step if you wish to. 
+As token is a sensitive piece of data, it has not been pushed into the repo. In order to use one, please add `./GitHubSample/Config/Secrets.xcconfig` file (added to .gitignore) locally, with `GITHUB_AUTH_TOKEN=your_token_here` in it. It is worth mentioning that the app works perfectly fine without a token set, so you might skip this step if you wish to.
 
 Several consideration related to Xcode bugs:
 - I had to remove @testable imports from packages, as it was preventing the app to build for profiling (that is, to analyze it via Instruments). For this reason, I had to change access rights to some methods frome internal to public.
@@ -23,7 +27,9 @@ Several consideration related to Xcode bugs:
 While the minimum specifications have been met, there are quite a few things I would love to add on top of them, if there was more time:
 
 - WebView layout tunes (e.g. a loader)
+- Extensive unit test coverege of `ViewModel`
 - Animations showing fetch operation
+- Handling cases for missing URLs (esp. for avatars) - seems like it never happens, but still it is not cool to depend on it.
 - Extend ViewModel & UI to support filters (sort order, first page). The model already supports them.
 - Implement UI tests
 - iPadOS-tuned layout. While the iOS version of the app works ok, the layout can be significantly enhanced. Most of all, I would've used grids instead of lists for repos, and a master-detail navigation style (users list -> user details).
@@ -34,3 +40,4 @@ While the minimum specifications have been met, there are quite a few things I w
 - Process some API errors mentioned in the docs that indicate rate limit excess. 
 - UIKit version of the app (just for fun, to see how good the SwiftUI-tuned `ViewModel` would power it)
 - Moving response parsing & disc access operations to a background thread. However, taking into account the rather limited magnitude of these operations in the app, it might not be quite feasible.
+- Pull Request pipeline - 1) run unit- (and UI-, if any) tests and block merge to develop/main if any fails. 2) check minimum test coverage for `ViewModel` and `API` and block if it is not sufficient. 
