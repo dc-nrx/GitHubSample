@@ -14,11 +14,13 @@ import ViewModel
 import Preview
 
 struct UserDetailsView<API: GitHubAPI>: View {
-    
+
     @ObservedObject
     var vm: UserDetailsVM<API>
     
     @State var imageExtended = false
+    
+    @State var presentedRepo: Repo?
     
     init(_ vm: UserDetailsVM<API>) {
         self.vm = vm
@@ -35,14 +37,10 @@ struct UserDetailsView<API: GitHubAPI>: View {
                 Divider()
             }
             PaginatorVStack(vm.reposPaginatorVM) { repo in
-                NavigationLink {
-                    Text("\(repo.url)")
-                } label: {
-                    RepoCell(repo)
-                        .padding()
-                        .background()
-                }
-                .buttonStyle(PlainButtonStyle())
+                RepoCell(repo)
+                    .padding()
+                    .background()
+                    .onTapGesture { presentedRepo = repo }
                 Divider()
             }
         }
@@ -50,6 +48,10 @@ struct UserDetailsView<API: GitHubAPI>: View {
         .task { await vm.onAppear() }
         .refreshable(action: vm.refresh)
         .navigationTitle(vm.user.login)
+        .sheet(item: $presentedRepo) { repo in
+            WebView(repo.htmlUrl)
+                .navigationTitle(repo.name)
+        }
     }
     
     var headerLayout: AnyLayout {

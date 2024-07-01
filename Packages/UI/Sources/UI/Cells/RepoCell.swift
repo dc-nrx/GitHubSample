@@ -66,9 +66,11 @@ struct RepoCell: View {
 }
 
 #Preview {
-    List {
-        ForEach(Samples.repos.dropFirst(5)) {
-            RepoCell($0)
+    NavigationStack {
+        List {
+            ForEach(Samples.repos.dropFirst(5)) {
+                RepoCell($0)
+            }
         }
     }
 }

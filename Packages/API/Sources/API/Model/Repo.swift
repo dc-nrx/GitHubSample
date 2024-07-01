@@ -15,6 +15,7 @@ public struct Repo: Identifiable, Codable {
     public var fullName: String
     public var description: String?
     public var url: URL
+    public var htmlUrl: URL
     
     public var owner: User
     
