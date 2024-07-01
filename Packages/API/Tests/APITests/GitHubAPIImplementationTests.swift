@@ -22,7 +22,10 @@ final class GitHubAPIImplementationTests: XCTestCase {
         configuration.protocolClasses = [MockURLProtocol.self]
         let mockSession = URLSession.init(configuration: configuration)
         
-        sessionManager = GitHubSessionManager(session: mockSession)
+        sessionManager = GitHubSessionManager(
+            session: mockSession,
+            rateLimiter: RateLimiter(.init(interval: 60, limit: 60)) { _ in }
+        )
         sut = .init(baseURL: URL(string: "https://sample")!, sessionManager: sessionManager)
     }
 

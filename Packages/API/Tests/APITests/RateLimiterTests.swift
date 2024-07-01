@@ -63,7 +63,7 @@ final class RateLimiterTests: XCTestCase {
     }
     
     func testNonPositiveRateLimit_throwsCorrectErrorOnRecord() async throws {
-        let sut = RateLimiter(.init(interval: 10, limit: 0))
+        let sut = RateLimiter(.init(interval: 10, limit: 0)) { _ in }
         do {
             try await sut.record()
             XCTFail("Error expected")
@@ -82,7 +82,7 @@ private extension RateLimiterTests {
      */
     func makeSut(interval: TimeInterval, limit: Int, filledUp: Bool) async throws -> (RateLimiter, RateLimiter.Config) {
         let config = RateLimiter.Config(interval: interval, limit: limit)
-        var sut = RateLimiter(config)
+        var sut = RateLimiter(config) { _ in }
         if filledUp {
             for _ in 0..<limit {
                 try await sut.record(ignoreLimitExceededCheck: true)

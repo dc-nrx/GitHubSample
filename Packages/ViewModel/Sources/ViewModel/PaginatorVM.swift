@@ -103,8 +103,6 @@ public extension PaginatorVM {
     func explicitRequestNextPageFetch() {
         requestNextPageFetch()
     }
-    
-    // TODO: Support refetch last page
 }
 
 private extension PaginatorVM {
@@ -203,7 +201,7 @@ private extension PaginatorVM {
                 }
             }
         }
-//        .debounce(for: 0.1, scheduler: DispatchQueue.main)
+        .debounce(for: 0.1, scheduler: DispatchQueue.main)
         .assign(to: &$nextPageLoadingStatus)
     }
 }
