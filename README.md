@@ -11,6 +11,8 @@ The app is devided into several packages:
 
 I prefer not to use 3d parties unless they have some considerable value. It is especially true in the recent years, as so many great standard frameworks have been introduced. Thus, the only external lib I've used here is `SDWebImage`, which handles remote images in a magnificent way (including cache).  
 
+As there were no requirements on backward compatibility, I've followed the common practice and set it to the last 2 versions - that is, starting from iOS 16. 
+
 There are also some component-specific considerations - please refer to the respective docs to see them.
 
 ## Important Notes
@@ -21,6 +23,13 @@ Several consideration related to Xcode bugs:
 - I had to remove @testable imports from packages, as it was preventing the app to build for profiling (that is, to analyze it via Instruments). For this reason, I had to change access rights to some methods frome internal to public.
 - In order to use SwiftUI previews in the UI package, please open the package directly. If opened in context of the main project, the Preview bundle can't be properly loaded, which in turn renders the previews virtually impossible to use.
 - Not surprisingly, the debugger makes the app work much slower than it actually is, which is is even more so due to extensive logging. Therefore, in order to properly see the preformance level, please launch the app withoug the debugger attached.
+
+## Nice extras:
+
+- Japanese localization (except for error messages). Can't guarantee the translations quality though! 
+- TipKit integration - on rather basic level, can be seen in the user details screen.
+- Comprehensive API that allow adding new endpoints in some minutes - and several new scenes in a single day.
+- Mocks that support extensive unit tests and provide arbitrary previews.
 
 ## Area for improvement:
 
@@ -41,3 +50,4 @@ While the minimum specifications have been met, there are quite a few things I w
 - UIKit version of the app (just for fun, to see how good the SwiftUI-tuned `ViewModel` would power it)
 - Moving response parsing & disc access operations to a background thread. However, taking into account the rather limited magnitude of these operations in the app, it might not be quite feasible.
 - Pull Request pipeline - 1) run unit- (and UI-, if any) tests and block merge to develop/main if any fails. 2) check minimum test coverage for `ViewModel` and `API` and block if it is not sufficient. 
+- Enhance TipKit integration
