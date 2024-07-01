@@ -177,7 +177,7 @@ private extension PaginatorVM {
         
         fetchTask = nil
         withAnimation {
-            self.errorMessage = "Error occured: \(error)"
+            self.errorMessage = error.localizedDescription
         }
     }
     
@@ -193,7 +193,7 @@ private extension PaginatorVM {
                 return .fetchingNextPage
             case (true, true):
                 return itemsEmtpy ? .initialFetch : .refreshing
-            case (false, false):
+            case (false, _):
                 if nextPageAvailable {
                     return .nextPageAvailable
                 } else if !itemsEmtpy {
@@ -201,8 +201,6 @@ private extension PaginatorVM {
                 } else {
                     return .empty
                 }
-            default:
-                return .unknown
             }
         }
 //        .debounce(for: 0.1, scheduler: DispatchQueue.main)

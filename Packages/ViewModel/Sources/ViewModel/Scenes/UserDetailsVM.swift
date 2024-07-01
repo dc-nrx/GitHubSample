@@ -8,12 +8,17 @@
 import Foundation
 import API
 
+//import OSLog
+
 @MainActor
 public class UserDetailsVM<API: GitHubAPI>: ObservableObject {
     
     @Published
     public private(set) var user: User
-    
+
+    @Published
+    public private(set) var errorMessage: String?
+
     public let api: API
     
     public private(set) lazy var reposPaginatorVM = PaginatorVM(api.repos, filter: .init(username: user.login), pageSize: 30)
@@ -40,7 +45,11 @@ public class UserDetailsVM<API: GitHubAPI>: ObservableObject {
 private extension UserDetailsVM {
     
     func fetchUserDetails() async {
-        user = try! await api.userDetails(user.login)
-        print("### user updated to \(user)")
+        do {
+            user = try await api.userDetails(user.login)
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }

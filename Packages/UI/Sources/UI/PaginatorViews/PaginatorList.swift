@@ -34,6 +34,10 @@ public struct PaginatorList<Api: Paginator, Content: View>: View {
     
     public var body: some View {
         List {
+            if let errorMessage = vm.errorMessage {
+                Text(errorMessage)
+                    .foregroundStyle(.yellow)
+            }
             Section {
                 ForEach(vm.items) { item in
                     content(item)

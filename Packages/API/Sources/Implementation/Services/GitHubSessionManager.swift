@@ -21,7 +21,7 @@ public class GitHubSessionManager {
     
     public init(
         session: URLSession = .init(configuration: .default),
-        rateLimiter: RateLimiter = .init(),
+        rateLimiter: RateLimiter,
         authToken: String? = nil
     ) {
         self.session = session
@@ -59,7 +59,8 @@ private extension GitHubSessionManager {
     }
 
     var ignoreRateLimit: Bool {
-        authToken != nil
+        false
+//        authToken != nil
     }
     
     func makeRequest(_ method: HttpMethod, for url: URL) -> URLRequest {

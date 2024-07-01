@@ -44,6 +44,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4F4CB3E32C32E79D00A438BF /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
 		4F7A440F2C29645C00F294C2 /* GitHubSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GitHubSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F7A44122C29645C00F294C2 /* GitHubSampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubSampleApp.swift; sourceTree = "<group>"; };
 		4F7A44162C29645E00F294C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -99,6 +100,7 @@
 		4F7A44062C29645C00F294C2 = {
 			isa = PBXGroup;
 			children = (
+				4F4CB3E32C32E79D00A438BF /* Readme.md */,
 				4F7A44112C29645C00F294C2 /* GitHubSample */,
 				4FD8B9582C2C344300E5A6D9 /* UI */,
 				4F7A443E2C2B3CB400F294C2 /* ViewModel */,

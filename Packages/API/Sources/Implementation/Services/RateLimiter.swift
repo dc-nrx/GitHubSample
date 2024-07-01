@@ -31,6 +31,8 @@ public actor RateLimiter {
     }
     public var config: Config
     
+    public var save: ([Record]) -> ()
+    
     /**
      The records that have been tracked and have not been cleaned up. made in the past `rateLimit.interval` seconds.
      See `cleanupOutdatedRecords(refRecord:)` for details.
@@ -51,11 +53,13 @@ public actor RateLimiter {
      to keep the track between app launches.
      */
     public init(
-        _ config: Config = .init(interval: 60 * 60, limit: 60),
-        persistedRecords: [Record] = .init()
+        _ config: Config,
+        persistedRecords: [Record] = .init(),
+        save: @escaping ([Record]) -> ()
     ) {
         self.config = config
         self.records = persistedRecords
+        self.save = save
         
         logger.info("Initialized with interval: \(config.interval), limit: \(config.limit), persistedRecords: \(persistedRecords)")
     }
@@ -115,6 +119,7 @@ public extension RateLimiter {
             throw ApiError.rateLimiterRecordsOrderViolation(lastRecord, rec)
         }
         records.append(rec)
+        save(records)
         
         logger.debug("Record \(rec) added. Total count: \(self.records.count)")
     }
@@ -138,6 +143,7 @@ public extension RateLimiter {
         if cleanupInPlace {
             records = Array(result)
             logger.debug("\(outdatedItemsCount) records cleand up against refDate: \(refDate)")
+            logger.info("Edge date = \(edgeDate)")
         }
         return result
     }

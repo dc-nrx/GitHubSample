@@ -15,9 +15,6 @@ import Implementation
 @main
 struct GitHubSampleApp: App {
     
-    @Environment(\.scenePhase) 
-    var scenePhase
-    
     @StateObject
     var dependencyContainer = DependencyContainer()
         
@@ -31,9 +28,6 @@ struct GitHubSampleApp: App {
                     Text("Initialization...")
                 }
             }
-        }
-        .onChange(of: scenePhase) { oldValue, newValue in
-            dependencyContainer.scenePhaseChanged(to: newValue)
         }
     }
 }

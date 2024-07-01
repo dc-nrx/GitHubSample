@@ -28,6 +28,10 @@ struct UserDetailsView<API: GitHubAPI>: View {
     
     var body: some View {
         ScrollView {
+            if let errorMessage = vm.errorMessage {
+                Text(errorMessage)
+                    .foregroundStyle(.yellow)
+            }
             headerView(vm.user)
             VStack(alignment: .leading) {
                 Text("Repos list:")
@@ -51,6 +55,7 @@ struct UserDetailsView<API: GitHubAPI>: View {
         .sheet(item: $presentedRepo) { repo in
             WebView(repo.htmlUrl)
                 .navigationTitle(repo.name)
+                .ignoresSafeArea()
         }
     }
     
