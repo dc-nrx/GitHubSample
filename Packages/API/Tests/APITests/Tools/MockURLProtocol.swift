@@ -8,6 +8,9 @@ import Foundation
 
 /**
  Used in conjunction with ``MockURLProtocol``.
+ 
+ A collection of useful request handlers: unconditional error, specific status code etc.
+ Can be extended if needed.
  */
 enum RequestHandler {
     case error(Error)
