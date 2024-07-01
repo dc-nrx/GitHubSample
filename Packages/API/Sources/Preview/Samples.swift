@@ -47,8 +47,8 @@ public final class Samples {
     
     /// Global is already `lazy`, thus no performance concern for production code
     public static var users = [User](jsonFile: "users70_page1") + [User](jsonFile: "users70_page2")
-    
     public static var repos = [Repo](jsonFile: "repos_50_page1")
+    public static var userDetails = User(jsonFile: "user")
     
     public static var usersResponseData: Data {
         let url = Bundle.module.url(forResource: "users70_page1", withExtension: "json")

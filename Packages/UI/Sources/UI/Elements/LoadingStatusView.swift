@@ -27,7 +27,7 @@ struct LoadingStatusView: View {
         case .fetching:
             Text("Loading next page...")
         case .notAvailable:
-            Text("No data left.")
+            Text("Nothing left to fetch.")
         }
     }
 }
