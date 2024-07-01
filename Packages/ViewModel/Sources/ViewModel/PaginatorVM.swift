@@ -13,52 +13,50 @@ public class PaginatorVM<P: Paginator>: ObservableObject {
     public typealias Item = P.Item
     
     @Published
-    public var items = [Item]()
+    public private(set) var items = [Item]()
     
     @Published
-    public var showRefreshControl = false
+    public private(set) var isRefreshing = false
 
     @Published
-    public var showLoadingNextPage = false
+    public private(set) var nextPageLoadingStatus: NextPageInfo = .unknown
     
     @Published
-    public var errorMessage: String?
+    public private(set) var errorMessage: String?
 
-    @Published
-    public var connectionState: ConnectionState = .inactive
-    
-    public var prefetchDistance: Int
-    
     public private(set) var pageSize: Int
     public private(set) var filter: P.Filter
-    
+
+    /**
+     Maximum distance between the last visible item and the end of the list
+     before  triggering next page fetch.
+     
+     If `nil`, no fetch on `itemShown` event will ever be triggered.
+     */
+    public var prefetchDistance: Int?
+        
     private let paginator: P
-    private let pathMonitor: NWPathMonitor
     private let logger = Logger(subsystem: "ViewModel", category: "PaginatorVM<\(P.self)")
     
+    @Published
     private var nextPage: P.PaginationInfo.Token?
-    private var fetchTask: Task<Void, Never>? {
-        willSet {
-            let newState: ConnectionState = (newValue == nil) ? .inactive : .active
-            connectionStateTransition(to: newState)
-        }
-    }
+    
+    @Published
+    private var fetchTask: Task<Void, Never>?
     
     public init(
         _ paginator: P,
         filter: P.Filter,
         pageSize: Int,
-        pathMonitor: NWPathMonitor = .init(),
-        distanceBeforePrefetch: Int = 10
+        prefetchDistance: Int? = 3
     ) {
         logger.debug("init")
         self.paginator = paginator
-        self.prefetchDistance = distanceBeforePrefetch
+        self.prefetchDistance = prefetchDistance
         self.filter = filter
         self.pageSize = pageSize
-        self.pathMonitor = pathMonitor
         
-        self.observeNetworkChanges()
+        scheduleNextPageInfoUpdates()
     }
 }
 
@@ -71,6 +69,9 @@ public extension PaginatorVM {
         }
     }
 
+    /**
+     The method is made `async` for convenient use in conjecture with `refreshable`.
+     */
     func asyncRefresh() async {
         logger.info(#function)
         requestRefresh()
@@ -78,13 +79,29 @@ public extension PaginatorVM {
         logger.info("\(#function): finished")
     }
 
+    /**
+     Call this method upon showing a cell representing the `item`.
+     This will trigger next page fetch at the moment determined by `prefetchDistance`.
+     If `prefetchDistance == nil`, this method can be ignored.
+     
+     - Warning: Be wary that when used in SwiftUI, in certain cases the `onAppear`
+     modifier (a natural place to call this method from) might not get triggered itself.
+     (e.g., when refreshing with a small `pageSize`).
+     Therefore, it is advisable to have a fallback option to fetch the next page 
+     (see `explicitRequestNextPageFetch`)
+     */
     func itemShown(_ item: Item) {
         let itemId = "\(item.id)"
         logger.info("item shown; id = \(itemId)")
         
-        if items.suffix(prefetchDistance).contains(item) {
+        if let prefetchDistance,
+           items.suffix(prefetchDistance).contains(item) {
             requestNextPageFetch()
         }
+    }
+    
+    func explicitRequestNextPageFetch() {
+        requestNextPageFetch()
     }
     
     // TODO: Support refetch last page
@@ -96,7 +113,6 @@ private extension PaginatorVM {
         logger.info(#function)
         guard fetchTask == nil else { return }
         guard let nextPage else { return }
-        showLoadingNextPage = true
         
         logger.debug("next page fetch initiated")
         fetchTask = Task { @BackgroundActor [weak self] in
@@ -109,10 +125,7 @@ private extension PaginatorVM {
             } catch {
                 await process(error: error)
             }
-            await MainActor.run {
-                self.showLoadingNextPage = false
-                self.fetchTask = nil
-            }
+            
             logger.debug("fetch task finished")
         }
     }
@@ -120,7 +133,7 @@ private extension PaginatorVM {
     func requestRefresh() {
         logger.info(#function)
         guard fetchTask == nil else { return }
-        showRefreshControl = true
+        isRefreshing = true
         
         logger.debug("refresh initiated")
         fetchTask = Task { @BackgroundActor [weak self] in
@@ -133,8 +146,9 @@ private extension PaginatorVM {
             } catch {
                 await process(error: error)
             }
+            
             await MainActor.run {
-                self.fetchTask = nil
+                self.isRefreshing = false
             }
             logger.debug("refresh task finished")
         }
@@ -147,6 +161,8 @@ private extension PaginatorVM {
         let nextPageString = "\(String(describing: page.1.next))"
         logger.info("page received. items = \(page.0), next page = \(nextPageString)")
         
+        fetchTask = nil
+        nextPage = page.1.next
         withAnimation {
             if rewriteItems {
                 self.items = page.0
@@ -154,34 +170,35 @@ private extension PaginatorVM {
                 self.items.append(contentsOf: page.0)
             }
         }
-        nextPage = page.1.next
     }
     
     func process(error: Error) {
         logger.warning("processing error: \(error)")
+        
+        fetchTask = nil
         withAnimation {
             self.errorMessage = "Error occured: \(error)"
         }
     }
     
-    func connectionStateTransition(to newState: ConnectionState) {
-        let newStateString = "\(newState)"
-        logger.debug("connection state transition to `\(newStateString)`")
-        
-        withAnimation {
-            connectionState = newState
-        }
-    }
-    
-    func observeNetworkChanges() {
-        pathMonitor.pathUpdateHandler = { [weak self] path in
-            guard let self else { return }
-            if path.availableInterfaces.isEmpty {
-                connectionStateTransition(to: .noConnection)
-            } else if case .noConnection = self.connectionState {
-                connectionStateTransition(to: .inactive)
+    func scheduleNextPageInfoUpdates() {
+        Publishers.CombineLatest3(
+            $fetchTask.map { $0 != nil },
+            $isRefreshing,
+            $nextPage.map { $0 != nil }
+        ).map { fetching, isRefresh, nextPageAvailable in
+            switch (fetching, isRefresh) {
+            case (true, false):
+                .fetching
+            case (true, true):
+                .unknown
+            case (false, false):
+                nextPageAvailable ? .available : .notAvailable
+            default:
+                .unknown
             }
         }
+        .assign(to: &$nextPageLoadingStatus)
     }
 }
 

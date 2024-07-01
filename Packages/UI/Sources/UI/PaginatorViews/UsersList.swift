@@ -20,18 +20,32 @@ public struct UsersList<API: GitHubAPI>: View {
     }
     
     public var body: some View {
-        PaginatorList(vm) { user in
-            NavigationLink(value: user) {
-                UserCell(user)
+        List {
+            Section {
+                PaginatorList(vm) { user in
+                    NavigationLink {
+                        Text(user.login)
+                    } label: {
+                        UserCell(user)
+                    }
+                }
+            } footer: {
+//                if vm.showLoadingNextPage {
+//                    Text("Loading next page...")
+//                } else {
+                    Text("No items left.")
+//                }
             }
         }
-        .navigationDestination(for: User.self) { user in
-            
-        }
+//        .navigationDestination(for: User.self) { user in
+//            Text("xxx")
+//        }
     }
 }
 
 #Preview {
     let factory = ViewModelFactory(api: ApiMock())
-    return UsersList(factory.makeUsersVM())
+    return NavigationStack {
+        UsersList(factory.makeUsersVM())
+    }
 }

@@ -30,18 +30,17 @@ public struct PaginatorList<Api: Paginator, Content: View>: View {
     }
     
     public var body: some View {
-        List {
-            Section {
+        ScrollView {
+            LazyVStack {
                 ForEach(vm.items) { item in
                     content(item)
                         .onAppear { vm.itemShown(item) }
                 }
-            } footer: {
-                if vm.showLoadingNextPage {
-                    Text("Loading next page...")
-                } else {
-                    Text("No items left.")
+                LoadingStatusView(vm.nextPageLoadingStatus) {
+                    vm.explicitRequestNextPageFetch()
                 }
+                .padding(.top)
+                .foregroundStyle(.secondary)
             }
         }
         .onAppear(perform: vm.onAppear)
@@ -58,13 +57,14 @@ public struct PaginatorList<Api: Paginator, Content: View>: View {
         ReposPaginatorMock(Samples.repos,
                            nextDelay: 2),
         filter: .init(username: "username"),
-        pageSize: 15
+        pageSize: 20
     )
     
     return NavigationStack {
-        PaginatorList(vm) {
-//            UserCell($0)
-            RepoCell($0)
-        }
+            PaginatorList(vm) {
+                //            UserCell($0)
+                RepoCell($0)
+            }
+        .listRowSeparator(.visible, edges: /*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
     }
 }
