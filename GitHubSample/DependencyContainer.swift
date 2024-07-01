@@ -17,7 +17,7 @@ public final class DependencyContainer: ObservableObject {
     public typealias API = GitHubAPIImplementation
     
     private let rateLimiterKey = "rate_limiter"
-    private let rateLimiterConfig = RateLimiter.Config(interval: 60 * 60, limit: 30)
+    private let rateLimiterConfig = RateLimiter.Config(interval: 60 * 60, limit: 60)
     private let logger = Logger(subsystem: "GitHubSample", category: "DependencyContainer")
     
     @Published @MainActor

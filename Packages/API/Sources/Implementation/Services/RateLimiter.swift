@@ -9,7 +9,14 @@ import Foundation
 import API
 import OSLog
 
-/// `actor` to prevent race conditions during `requestTimestamps` alterations.
+/**
+ Rate limiter to track record of all requests and limit them as needed.
+ 
+ 
+ 
+ - Note: `actor` is used to prevent race conditions during `records` alterations.
+ */
+
 public actor RateLimiter {
     public typealias Record = Date
     
@@ -31,7 +38,10 @@ public actor RateLimiter {
     }
     public var config: Config
     
-    public var save: ([Record]) -> ()
+    /**
+     Saves the records to the persistant store, to be preserved between app launches.
+     */
+    private var save: ([Record]) -> ()
     
     /**
      The records that have been tracked and have not been cleaned up. made in the past `rateLimit.interval` seconds.
@@ -49,8 +59,9 @@ public actor RateLimiter {
      - Parameter config: Contains rate limiting configuration (see `config` for details),
      and is set to `config` field without modifications. Can be changed later.
      
-     - Parameter persistedRequestTimestamps: Can be passed
-     to keep the track between app launches.
+     - Parameter persistedRecords: Can be passed to keep the track between app launches.
+     
+     - Parameter save: The function that saves the records to persistant store. Being called upon each successful `record` call.
      */
     public init(
         _ config: Config,
@@ -94,11 +105,17 @@ public extension RateLimiter {
     }
     
     /**
-     Records the operation timestamp.
+     Records the operation timestamp if the limit has not been exceeded, or if `ignoreLimitExceededCheck` is `true`.
+     Throws `ApiError.rateLimitExceeded` otherwise.
      
-     - parameter timestamp: The timestamp to be recorded.
+     - Parameter rec: The timestamp to be recorded.
      
-     - parameter ignoreOrderViolation: For sensitive applications, it might be important to ensure
+     - Parameter ignoreLimitExceededCheck: If `true`, add the record without throwing an error
+     without checking if the limit has been exceeded.
+     
+     - Parameter cleanupInPlace: If true, cleans up all the records that are older than `rec - config.interval`
+
+     - Parameter ignoreOrderViolation: For sensitive applications, it might be important to ensure
      the correct order of the records (e.g., to use binary search in `cleanupOutdatedRequestTimestamps`).
      Normally, however, minor violations of the order should not
      present any threat, and it would be wiser to avoid unneeded `throw`s in such cases.
@@ -124,7 +141,14 @@ public extension RateLimiter {
         logger.debug("Record \(rec) added. Total count: \(self.records.count)")
     }
     
-    // TODO: Doc
+    /**
+     Get all records that have been made during `config.interval` before `refDate`.
+     
+     - Parameter relevantTo: The reference date to check the records age against.
+     - Parameter cleanupInPlace: If true, cleans up all the records that are older than `refDate - config.interval`
+     
+     - Returns: An array slice containing all the records within the requested time interval.
+     */
     @discardableResult
     func records(
         relevantTo refDate: Date = .now,
