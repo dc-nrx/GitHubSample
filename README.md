@@ -1,5 +1,9 @@
 #  Git Hub Sample App
 
+For the assignment details, please refer to `AssignmentDetails.pdf` in the project root.
+
+---
+
 The app is devided into several packages:
 - **API**: Contains the model structs, API interface and its implementations - both real and previews that provide mocked data.
 
